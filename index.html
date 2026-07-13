@@ -422,8 +422,10 @@
             <textarea id="msg" rows="3" placeholder="궁금한 점을 자유롭게 남겨주세요."></textarea>
           </div>
         </div>
-        <button type="submit" class="btn btn-block">상담 신청하기</button>
-        <div class="consult-success" id="consultSuccess">신청이 접수되었습니다. 데모 화면이라 실제로 저장되거나 발송되지는 않습니다.</div>
+        <input type="text" id="website" name="website" autocomplete="off" tabindex="-1" style="position:absolute; left:-9999px; width:1px; height:1px; opacity:0;" aria-hidden="true">
+        <button type="submit" class="btn btn-block" id="consultSubmitBtn">상담 신청하기</button>
+        <div class="consult-success" id="consultSuccess">신청이 접수되었습니다. 담당자가 남겨주신 연락처로 안내드립니다.</div>
+        <div class="consult-success" id="consultError" style="display:none; background:rgba(161,61,46,0.1); color:var(--accent);">신청에 실패했습니다. 잠시 후 다시 시도해주세요.</div>
       </form>
     </div>
   </section>
@@ -445,8 +447,40 @@
     }
     function submitConsult(e) {
       e.preventDefault();
-      document.getElementById('consultSuccess').style.display = 'block';
-      e.target.reset();
+      const form = e.target;
+      const btn = document.getElementById('consultSubmitBtn');
+      const successEl = document.getElementById('consultSuccess');
+      const errorEl = document.getElementById('consultError');
+      successEl.style.display = 'none';
+      errorEl.style.display = 'none';
+      btn.disabled = true;
+      btn.textContent = '전송 중...';
+
+      const body = new URLSearchParams({
+        product: 'PENSION',
+        name: document.getElementById('name').value,
+        phone: document.getElementById('phone').value,
+        interest: document.getElementById('planField').value,
+        goal: document.getElementById('goal').value,
+        message: document.getElementById('msg').value,
+        website: document.getElementById('website').value,
+      });
+
+      fetch('/api/consult/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body })
+        .then(res => res.json().catch(() => ({ ok: false })))
+        .then(data => {
+          if (data.ok) {
+            successEl.style.display = 'block';
+            form.reset();
+          } else {
+            errorEl.style.display = 'block';
+          }
+        })
+        .catch(() => { errorEl.style.display = 'block'; })
+        .finally(() => {
+          btn.disabled = false;
+          btn.textContent = '상담 신청하기';
+        });
       return false;
     }
   </script>
