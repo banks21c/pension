@@ -8,46 +8,53 @@
 <link rel="icon" type="image/png" sizes="32x32" href="/static/articles/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/static/articles/favicon-16x16.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/static/articles/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;600;700&family=Noto+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --ink: #1f2e28;
-    --ink-soft: #536056;
-    --paper: #f1ede1;
-    --card: #fffcf5;
-    --card-stub: #e8e2ce;
-    --line: #d8d0ba;
-    --line-strong: #b9b096;
-    --accent: #a13d2e;
+    /* 네이비 잉크 + 금색 포인트 + 인장 레드 — 공식 증서/증권 톤 */
+    --ink: #0d1830;
+    --ink-soft: #5b6472;
+    --paper: #f8f6f0;
+    --card: #fffdf8;
+    --card-stub: #efeadc;
+    --line: #dcd3ba;
+    --line-strong: #cda658;
+    --accent: #a97f34;
+    --accent-soft: #cda658;
     --accent-ink: #ffffff;
+    --seal: #8c2a1e;
     --success: #2f7a4d;
     --success-bg: #e6f4ea;
-    --shadow: 0 1px 2px rgba(31,46,40,0.06), 0 8px 24px rgba(31,46,40,0.08);
+    --shadow: 0 1px 2px rgba(13,24,48,0.06), 0 8px 24px rgba(13,24,48,0.08);
   }
   @media (prefers-color-scheme: dark) {
     :root {
-      --ink: #eef0ea;
-      --ink-soft: #b7bfae;
-      --paper: #12160f;
-      --card: #1c231a;
-      --card-stub: #262f22;
-      --line: #3a4536;
-      --line-strong: #4d5a48;
-      --accent: #e07a5f;
-      --accent-ink: #1f2e28;
+      --ink: #eef1f7;
+      --ink-soft: #93a0bd;
+      --paper: #0b1122;
+      --card: #131c33;
+      --card-stub: #1a2540;
+      --line: #2b3a5e;
+      --line-strong: #8c6a2e;
+      --accent: #cda658;
+      --accent-soft: #e0bd7c;
+      --accent-ink: #0d1830;
+      --seal: #d17a63;
       --success: #7fd19f;
       --success-bg: #163524;
       --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 12px 32px rgba(0,0,0,0.4);
     }
   }
   :root[data-theme="dark"] {
-    --ink: #eef0ea; --ink-soft: #b7bfae; --paper: #12160f; --card: #1c231a; --card-stub: #262f22;
-    --line: #3a4536; --line-strong: #4d5a48; --accent: #e07a5f; --accent-ink: #1f2e28;
-    --success: #7fd19f; --success-bg: #163524; --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 12px 32px rgba(0,0,0,0.4);
+    --ink: #eef1f7; --ink-soft: #93a0bd; --paper: #0b1122; --card: #131c33; --card-stub: #1a2540;
+    --line: #2b3a5e; --line-strong: #8c6a2e; --accent: #cda658; --accent-soft: #e0bd7c; --accent-ink: #0d1830;
+    --seal: #d17a63; --success: #7fd19f; --success-bg: #163524; --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 12px 32px rgba(0,0,0,0.4);
   }
   :root[data-theme="light"] {
-    --ink: #1f2e28; --ink-soft: #536056; --paper: #f1ede1; --card: #fffcf5; --card-stub: #e8e2ce;
-    --line: #d8d0ba; --line-strong: #b9b096; --accent: #a13d2e; --accent-ink: #ffffff;
-    --success: #2f7a4d; --success-bg: #e6f4ea; --shadow: 0 1px 2px rgba(31,46,40,0.06), 0 8px 24px rgba(31,46,40,0.08);
+    --ink: #0d1830; --ink-soft: #5b6472; --paper: #f8f6f0; --card: #fffdf8; --card-stub: #efeadc;
+    --line: #dcd3ba; --line-strong: #cda658; --accent: #a97f34; --accent-soft: #cda658; --accent-ink: #ffffff;
+    --seal: #8c2a1e; --success: #2f7a4d; --success-bg: #e6f4ea; --shadow: 0 1px 2px rgba(13,24,48,0.06), 0 8px 24px rgba(13,24,48,0.08);
   }
 
   * { box-sizing: border-box; }
@@ -56,14 +63,15 @@
     margin: 0;
     background: var(--paper);
     color: var(--ink);
-    font-family: 'Pretendard Variable', 'Pretendard', -apple-system, BlinkMacSystemFont, 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
+    font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
   }
-  .mono { font-family: 'JetBrains Mono', 'SF Mono', 'Consolas', 'Menlo', monospace; font-variant-numeric: tabular-nums; }
+  .mono { font-family: 'IBM Plex Mono', 'SF Mono', 'Consolas', 'Menlo', monospace; font-variant-numeric: tabular-nums; }
+  .serif { font-family: 'Noto Serif KR', serif; }
   a { color: inherit; }
   .wrap { max-width: 960px; margin: 0 auto; padding: 0 24px; }
-  h1, h2, h3 { text-wrap: balance; margin: 0; }
+  h1, h2, h3 { text-wrap: balance; margin: 0; font-family: 'Noto Serif KR', serif; }
   :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
   @media (prefers-reduced-motion: no-preference) {
@@ -73,15 +81,15 @@
     @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
   }
 
-  header { padding: 16px 0; border-bottom: 1px solid var(--line); }
+  header { padding: 18px 0 16px; border-bottom: 3px double var(--accent-soft); }
   .back-link { font-size: 12.5px; color: var(--ink-soft); }
   .back-link:hover { color: var(--accent); }
   .brand-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 8px; flex-wrap: wrap; }
   .brand { display: flex; align-items: baseline; gap: 8px; }
-  .brand-mark { font-weight: 800; font-size: 18px; letter-spacing: -0.02em; }
+  .brand-mark { font-family: 'Noto Serif KR', serif; font-weight: 700; font-size: 18px; letter-spacing: -0.01em; }
   .brand-sub { font-size: 12.5px; color: var(--ink-soft); }
   .demo-chip {
-    font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase;
+    font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase;
     color: var(--accent); border: 1px solid var(--accent); border-radius: 3px; padding: 3px 8px;
   }
 
@@ -99,7 +107,7 @@
   }
   .passbook-main { padding: 40px 40px 32px; }
   .eyebrow {
-    font-family: 'JetBrains Mono', monospace; font-size: 11.5px; letter-spacing: 0.12em; text-transform: uppercase;
+    font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; letter-spacing: 0.12em; text-transform: uppercase;
     color: var(--ink-soft); margin-bottom: 14px;
   }
   .hero-title { font-size: 32px; font-weight: 800; letter-spacing: -0.01em; max-width: 22ch; }
@@ -107,7 +115,7 @@
 
   .calc-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
   .field label {
-    display: block; font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: 0.08em;
+    display: block; font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.08em;
     text-transform: uppercase; color: var(--ink-soft); margin-bottom: 6px;
   }
   .field input, .field select {
@@ -121,7 +129,7 @@
     font-weight: 700; font-size: 14px; cursor: pointer; padding: 12px 20px; background: var(--accent); color: var(--accent-ink);
     transition: transform 0.15s ease, box-shadow 0.15s ease;
   }
-  .btn:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(161,61,46,0.28); }
+  .btn:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(169,127,52,0.28); }
   .btn:active { transform: translateY(0); }
   .btn-block { width: 100%; margin-top: 18px; }
 
@@ -138,14 +146,18 @@
   }
   .seal {
     width: 96px; height: 96px; border-radius: 50%;
-    border: 3px double var(--accent);
-    color: var(--accent);
+    border: 2px solid var(--seal);
+    color: var(--seal);
     display: flex; align-items: center; justify-content: center;
     text-align: center;
-    font-weight: 800; font-size: 13px; letter-spacing: 0.02em;
+    font-family: 'Noto Serif KR', serif; font-weight: 700; font-size: 13px; letter-spacing: 0.02em;
     transform: rotate(-8deg);
+    position: relative;
   }
-  .cover-label { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-soft); text-align: center; }
+  .seal::before {
+    content: ""; position: absolute; inset: 7px; border: 1px solid var(--seal); border-radius: 50%; opacity: .5;
+  }
+  .cover-label { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-soft); text-align: center; }
 
   @media (max-width: 760px) {
     .passbook { grid-template-columns: 1fr; }
@@ -171,7 +183,7 @@
     overflow: hidden;
     transition: transform 0.15s ease, box-shadow 0.15s ease;
   }
-  .ledger-entry:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(31,46,40,0.08), 0 16px 32px rgba(31,46,40,0.12); }
+  .ledger-entry:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(13,24,48,0.08), 0 16px 32px rgba(13,24,48,0.12); }
 
   .ledger-stub {
     background: var(--card-stub);
@@ -179,22 +191,22 @@
     border-right: 1px solid var(--line);
     display: flex; flex-direction: column; justify-content: space-between;
   }
-  .inst-name { font-size: 16px; font-weight: 800; }
+  .inst-name { font-family: 'Noto Serif KR', serif; font-size: 16px; font-weight: 700; }
   .type-tag {
-    display: inline-block; margin-top: 6px; font-family: 'JetBrains Mono', monospace; font-size: 10.5px;
+    display: inline-block; margin-top: 6px; font-family: 'IBM Plex Mono', monospace; font-size: 10.5px;
     letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); border: 1px solid var(--accent);
     border-radius: 3px; padding: 2px 7px;
   }
-  .acct-no { margin-top: 14px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--ink-soft); }
+  .acct-no { margin-top: 14px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--ink-soft); }
 
   .ledger-body { padding: 20px 22px; display: flex; flex-direction: column; gap: 16px; }
   .ledger-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
-  .ledger-item .k { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: 0.07em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 4px; }
+  .ledger-item .k { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.07em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 4px; }
   .ledger-item .v { font-size: 14px; font-weight: 600; }
   .ledger-feature { font-size: 12.5px; color: var(--ink-soft); border-top: 1px dashed var(--line); padding-top: 12px; }
 
   .ledger-footer { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-top: 4px; }
-  .fee .k { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: 0.07em; text-transform: uppercase; color: var(--ink-soft); }
+  .fee .k { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.07em; text-transform: uppercase; color: var(--ink-soft); }
   .fee .v { font-size: 20px; font-weight: 800; color: var(--accent); }
   .fee .unit { font-size: 12px; font-weight: 400; color: var(--ink-soft); margin-left: 4px; }
 
@@ -207,7 +219,7 @@
 
   .terms-strip {
     margin-top: 20px; padding-top: 14px; border-top: 1px solid var(--line);
-    font-family: 'JetBrains Mono', monospace; font-size: 11.5px; line-height: 1.7; color: var(--ink-soft);
+    font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; line-height: 1.7; color: var(--ink-soft);
   }
   .terms-strip strong { color: var(--ink); }
 
@@ -225,7 +237,7 @@
 
   footer { border-top: 1px solid var(--line); padding: 28px 0 40px; }
   .footer-row { display: flex; flex-direction: column; gap: 8px; }
-  .footer-brand { font-weight: 800; font-size: 14px; }
+  .footer-brand { font-family: 'Noto Serif KR', serif; font-weight: 700; font-size: 14px; }
   .footer-note { font-size: 12px; color: var(--ink-soft); max-width: 60ch; line-height: 1.7; }
 </style>
 </head>
@@ -425,7 +437,7 @@
         <input type="text" id="website" name="website" autocomplete="off" tabindex="-1" style="position:absolute; left:-9999px; width:1px; height:1px; opacity:0;" aria-hidden="true">
         <button type="submit" class="btn btn-block" id="consultSubmitBtn">상담 신청하기</button>
         <div class="consult-success" id="consultSuccess">신청이 접수되었습니다. 담당자가 남겨주신 연락처로 안내드립니다.</div>
-        <div class="consult-success" id="consultError" style="display:none; background:rgba(161,61,46,0.1); color:var(--accent);">신청에 실패했습니다. 잠시 후 다시 시도해주세요.</div>
+        <div class="consult-success" id="consultError" style="display:none; background:rgba(140,42,30,0.1); color:var(--seal);">신청에 실패했습니다. 잠시 후 다시 시도해주세요.</div>
       </form>
     </div>
   </section>
