@@ -1,0 +1,5 @@
+pension_venv/
+backend/.env
+backend/var/
+__pycache__/
+*.pyc

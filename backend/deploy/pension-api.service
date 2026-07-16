@@ -1,0 +1,19 @@
+[Unit]
+Description=NextFinUp pension-api (FSS finlife proxy)
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/srv/pension/backend
+Environment=DJANGO_SETTINGS_MODULE=config.settings
+ExecStart=/srv/pension/pension_venv/bin/gunicorn config.wsgi:application \
+    --bind 127.0.0.1:8001 \
+    --workers 2 \
+    --access-logfile - \
+    --error-logfile -
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
