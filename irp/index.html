@@ -127,11 +127,6 @@
     font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase;
     color: var(--accent); border: 1px solid var(--accent); border-radius: 3px; padding: 3px 8px;
   }
-  .doc-ref {
-    margin-top: 10px; display: flex; gap: 18px; flex-wrap: wrap;
-    font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--ink-soft); letter-spacing: 0.03em;
-  }
-
   /* ---------- hero: passbook cover ---------- */
   .hero { padding: 40px 0; }
   .passbook {
@@ -538,6 +533,24 @@
 </head>
 <body>
 
+  <header id="app-header-fallback" style="visibility: hidden;">
+    <div class="wrap">
+      <a href="/" class="back-link">← NextFinUp 홈으로</a>
+    </div>
+  </header>
+  <script>
+    fetch('/partials/header/').then(function (r) { return r.ok ? r.text() : Promise.reject(); })
+      .then(function (html) {
+        var fallback = document.getElementById('app-header-fallback');
+        var wrapper = document.createElement('div');
+        wrapper.innerHTML = html;
+        fallback.replaceWith.apply(fallback, Array.from(wrapper.childNodes));
+      })
+      .catch(function () {
+        document.getElementById('app-header-fallback').style.visibility = 'visible';
+      });
+  </script>
+
   <header>
     <div class="wrap">
       <a href="/" class="back-link">← NextFinUp 홈으로</a>
@@ -548,9 +561,6 @@
           <span class="ai-chip"><i></i>ML+DL 분석 엔진</span>
         </div>
         <span class="demo-chip">Demo · 샘플 데이터</span>
-      </div>
-      <div class="doc-ref">
-        <span>문서번호 NF-IRP-2026-0713</span><span>발행 NextFinUp AI자산분석연구소</span><span>공시기준일 2026.07.13</span>
       </div>
     </div>
   </header>
