@@ -13,9 +13,14 @@ SECRET_KEY = env("DJANGO_SECRET_KEY", default="dev-only-insecure-key")
 DEBUG = env("DEBUG")
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["localhost", "127.0.0.1"])
 
-# 금융감독원 금융상품통합비교공시(finlife) 오픈API 인증키
+# 금융감독원 금융상품통합비교공시(finlife) 오픈API 인증키 — 예금/적금/연금저축/대출 상품
 # https://finlife.fss.or.kr 에서 발급, API별로 별도 승인이 필요할 수 있음
 FSS_FINLIFE_API_KEY = env("FSS_FINLIFE_API_KEY")
+
+# 통합연금포털 오픈API 인증키 — IRP/DB/DC 퇴직연금 사업자 비교공시 (finlife와 별개 시스템)
+# https://www.fss.or.kr/fss/lifeplan 에서 별도 발급 필요. 미발급 상태에서는 빈 문자열로 두면
+# irp_services.get_irp_products()가 자동으로 데모 데이터를 반환한다.
+FSS_LIFEPLAN_API_KEY = env("FSS_LIFEPLAN_API_KEY", default="")
 
 INSTALLED_APPS = [
     "django.contrib.contenttypes",

@@ -7,6 +7,7 @@ from django.core.cache import cache
 from django.http import JsonResponse
 from django.views.decorators.http import require_GET, require_POST
 
+from .irp_services import get_irp_products
 from .services import get_pension_products
 
 logger = logging.getLogger(__name__)
@@ -22,6 +23,16 @@ def pension_products(request):
         products = [p for p in products if p.get("pnsn_kind_nm") == pnsn_kind]
 
     return JsonResponse({"count": len(products), "products": products})
+
+
+@require_GET
+def irp_products(request):
+    """통합연금포털 API 인증키가 아직 없어, 실 스키마 구조를 반영한 예시 데이터를 반환한다.
+    키가 준비되면 irp_services.get_irp_products()의 반환값만 바뀌고 이 뷰는 그대로 쓸 수 있다."""
+    force_refresh = request.GET.get("refresh") == "1"
+    products = get_irp_products(force_refresh=force_refresh)
+    is_demo = not bool(getattr(settings, "FSS_LIFEPLAN_API_KEY", ""))
+    return JsonResponse({"count": len(products), "products": products, "source": "demo" if is_demo else "live"})
 
 
 CONSULT_LOG_PATH = settings.BASE_DIR / "var" / "consults.jsonl"
