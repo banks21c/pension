@@ -50,6 +50,10 @@ def consult_submit(request):
     if not name or not phone:
         return JsonResponse({"ok": False, "error": "이름과 연락처는 필수입니다."}, status=400)
 
+    consent = (request.POST.get("consent") or "").strip()
+    if not consent:
+        return JsonResponse({"ok": False, "error": "개인정보 수집·이용에 동의해야 신청할 수 있습니다."}, status=400)
+
     ip = _client_ip(request)
     rate_key = f"consult_rate:{ip}"
     if cache.get(rate_key):
@@ -65,6 +69,7 @@ def consult_submit(request):
         "interest": (request.POST.get("interest") or "").strip(),
         "goal": (request.POST.get("goal") or "").strip(),
         "message": (request.POST.get("message") or "").strip(),
+        "consent": True,
     }
 
     CONSULT_LOG_PATH.parent.mkdir(parents=True, exist_ok=True)
