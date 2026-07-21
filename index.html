@@ -258,6 +258,24 @@
 </head>
 <body>
 
+  <header id="app-header-fallback" style="visibility: hidden;">
+    <div class="wrap">
+      <a href="/" class="back-link">← NextFinUp 홈으로</a>
+    </div>
+  </header>
+  <script>
+    fetch('/partials/header/').then(function (r) { return r.ok ? r.text() : Promise.reject(); })
+      .then(function (html) {
+        var fallback = document.getElementById('app-header-fallback');
+        var wrapper = document.createElement('div');
+        wrapper.innerHTML = html;
+        fallback.replaceWith.apply(fallback, Array.from(wrapper.childNodes));
+      })
+      .catch(function () {
+        document.getElementById('app-header-fallback').style.visibility = 'visible';
+      });
+  </script>
+
   <header>
     <div class="wrap">
       <a href="/" class="back-link">← NextFinUp 홈으로</a>
