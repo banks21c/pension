@@ -64,7 +64,8 @@
   }
 
   * { box-sizing: border-box; }
-  html { color-scheme: light dark; }
+  html { color-scheme: light dark; scroll-behavior: smooth; }
+  section[id], #hero { scroll-margin-top: 54px; }
   body {
     margin: 0;
     background: var(--paper);
@@ -86,8 +87,30 @@
     .rise-delay-2 { animation-delay: .16s; }
     @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
   }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+  }
 
   header { padding: 18px 0 16px; border-bottom: 3px double var(--accent-soft); }
+
+  .toc-bar {
+    position: sticky; top: 0; z-index: 50;
+    background: var(--paper);
+    border-bottom: 1px solid var(--line);
+    box-shadow: 0 1px 0 rgba(0,0,0,0.02);
+  }
+  .toc-bar .wrap {
+    display: flex; gap: 4px; overflow-x: auto; padding: 9px 24px;
+    scrollbar-width: none;
+  }
+  .toc-bar .wrap::-webkit-scrollbar { display: none; }
+  .toc-link {
+    flex-shrink: 0; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.03em;
+    color: var(--ink-soft); text-decoration: none; padding: 6px 12px; border-radius: 6px; white-space: nowrap;
+    border: 1px solid transparent; transition: color 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
+  }
+  .toc-link:hover { color: var(--ink); }
+  .toc-link.active { color: var(--accent); border-color: var(--line-strong); background: var(--card); font-weight: 700; }
   .back-link { font-size: 12.5px; color: var(--ink-soft); }
   .back-link:hover { color: var(--accent); }
   .brand-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 8px; flex-wrap: wrap; }
@@ -532,7 +555,20 @@
     </div>
   </header>
 
-  <section class="hero">
+  <nav class="toc-bar" aria-label="목차">
+    <div class="wrap">
+      <a href="#hero" class="toc-link" data-toc="hero">§01 조건 입력</a>
+      <a href="#ai-analysis" class="toc-link" data-toc="ai-analysis">AI 매칭</a>
+      <a href="#plans" class="toc-link" data-toc="plans">§02 비교 원장</a>
+      <a href="#tax-calc" class="toc-link" data-toc="tax-calc">§03 세액공제</a>
+      <a href="#cost-sim" class="toc-link" data-toc="cost-sim">§04 비용 시뮬레이션</a>
+      <a href="#checklist" class="toc-link" data-toc="checklist">§05 확인사항</a>
+      <a href="#model" class="toc-link" data-toc="model">§06 모델 구조</a>
+      <a href="#consult" class="toc-link" data-toc="consult">§07 상담 신청</a>
+    </div>
+  </nav>
+
+  <section class="hero" id="hero">
     <div class="wrap">
       <div class="passbook rise">
         <div class="passbook-main">
@@ -1104,6 +1140,30 @@
   </footer>
 
   <script>
+    (function () {
+      var tocLinks = document.querySelectorAll('.toc-link');
+      var sections = Array.prototype.map.call(tocLinks, function (link) {
+        return document.getElementById(link.dataset.toc);
+      }).filter(Boolean);
+      if (!('IntersectionObserver' in window) || !sections.length) return;
+
+      var setActive = function (id) {
+        tocLinks.forEach(function (link) {
+          link.classList.toggle('active', link.dataset.toc === id);
+        });
+      };
+
+      var observer = new IntersectionObserver(function (entries) {
+        var visible = entries.filter(function (e) { return e.isIntersecting; });
+        if (visible.length) {
+          visible.sort(function (a, b) { return a.boundingClientRect.top - b.boundingClientRect.top; });
+          setActive(visible[0].target.id);
+        }
+      }, { rootMargin: '-88px 0px -70% 0px', threshold: 0 });
+
+      sections.forEach(function (section) { observer.observe(section); });
+    })();
+
     function selectPlan(name) {
       document.getElementById('planField').value = name;
       document.getElementById('consult').scrollIntoView({ behavior: 'smooth' });
