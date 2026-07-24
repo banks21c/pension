@@ -12,37 +12,37 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;600;700&family=Noto+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    /* 네이비 잉크 + 금색 포인트 + 인장 레드 — index.html과 동일한 공식 증서/증권 톤 */
-    --ink: #0d1830;
-    --ink-soft: #5b6472;
-    --paper: #f8f6f0;
-    --card: #fffdf8;
-    --card-stub: #efeadc;
-    --line: #dcd3ba;
-    --line-strong: #cda658;
-    --accent: #a97f34;
-    --accent-soft: #cda658;
+    /* NextFinUp 브랜드 블루 — 홈페이지(nextfinup.com)와 동일 팔레트 */
+    --ink: #16213a;
+    --ink-soft: #6c757d;
+    --paper: #f4f6f9;
+    --card: #ffffff;
+    --card-stub: #eef3fb;
+    --line: #dee2e6;
+    --line-strong: #9fc0ff;
+    --accent: #0d47a1;
+    --accent-soft: #1e88e5;
     --accent-ink: #ffffff;
-    --seal: #8c2a1e;
-    --success: #2f7a4d;
+    --seal: #c62828;
+    --success: #1e7e34;
     --success-bg: #e6f4ea;
-    --ml: #2f7a4d;
+    --ml: #1e7e34;
     --dl: #6b4f8f;
-    --shadow: 0 1px 2px rgba(13,24,48,0.06), 0 8px 24px rgba(13,24,48,0.08);
+    --shadow: 0 1px 2px rgba(13,45,110,0.08), 0 8px 24px rgba(13,45,110,0.10);
   }
   @media (prefers-color-scheme: dark) {
     :root {
       --ink: #eef1f7;
-      --ink-soft: #93a0bd;
-      --paper: #0b1122;
-      --card: #131c33;
-      --card-stub: #1a2540;
-      --line: #2b3a5e;
-      --line-strong: #8c6a2e;
-      --accent: #cda658;
-      --accent-soft: #e0bd7c;
-      --accent-ink: #0d1830;
-      --seal: #d17a63;
+      --ink-soft: #9fb0c9;
+      --paper: #0d1626;
+      --card: #142238;
+      --card-stub: #1b2c47;
+      --line: #2c3e5c;
+      --line-strong: #3f6fb0;
+      --accent: #4d8ee0;
+      --accent-soft: #7db3ee;
+      --accent-ink: #0d1626;
+      --seal: #e57373;
       --success: #7fd19f;
       --success-bg: #163524;
       --ml: #7fd19f;
@@ -51,16 +51,16 @@
     }
   }
   :root[data-theme="dark"] {
-    --ink: #eef1f7; --ink-soft: #93a0bd; --paper: #0b1122; --card: #131c33; --card-stub: #1a2540;
-    --line: #2b3a5e; --line-strong: #8c6a2e; --accent: #cda658; --accent-soft: #e0bd7c; --accent-ink: #0d1830;
-    --seal: #d17a63; --success: #7fd19f; --success-bg: #163524; --ml: #7fd19f; --dl: #c3a3e8;
+    --ink: #eef1f7; --ink-soft: #9fb0c9; --paper: #0d1626; --card: #142238; --card-stub: #1b2c47;
+    --line: #2c3e5c; --line-strong: #3f6fb0; --accent: #4d8ee0; --accent-soft: #7db3ee; --accent-ink: #0d1626;
+    --seal: #e57373; --success: #7fd19f; --success-bg: #163524; --ml: #7fd19f; --dl: #c3a3e8;
     --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 12px 32px rgba(0,0,0,0.4);
   }
   :root[data-theme="light"] {
-    --ink: #0d1830; --ink-soft: #5b6472; --paper: #f8f6f0; --card: #fffdf8; --card-stub: #efeadc;
-    --line: #dcd3ba; --line-strong: #cda658; --accent: #a97f34; --accent-soft: #cda658; --accent-ink: #ffffff;
-    --seal: #8c2a1e; --success: #2f7a4d; --success-bg: #e6f4ea; --ml: #2f7a4d; --dl: #6b4f8f;
-    --shadow: 0 1px 2px rgba(13,24,48,0.06), 0 8px 24px rgba(13,24,48,0.08);
+    --ink: #16213a; --ink-soft: #6c757d; --paper: #f4f6f9; --card: #ffffff; --card-stub: #eef3fb;
+    --line: #dee2e6; --line-strong: #9fc0ff; --accent: #0d47a1; --accent-soft: #1e88e5; --accent-ink: #ffffff;
+    --seal: #c62828; --success: #1e7e34; --success-bg: #e6f4ea; --ml: #1e7e34; --dl: #6b4f8f;
+    --shadow: 0 1px 2px rgba(13,45,110,0.08), 0 8px 24px rgba(13,45,110,0.10);
   }
 
   * { box-sizing: border-box; }
@@ -107,7 +107,7 @@
   .toc-link {
     flex-shrink: 0; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.03em;
     color: var(--ink-soft); text-decoration: none; padding: 6px 12px; border-radius: 6px; white-space: nowrap;
-    border: 1px solid transparent; transition: color 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
+    border: 1px solid transparent; transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
   }
   .toc-link:hover { color: var(--ink); }
   .toc-link.active { color: var(--accent); border-color: var(--line-strong); background: var(--card); font-weight: 700; }
@@ -160,12 +160,29 @@
   }
   .field input:focus, .field select:focus { border-color: var(--accent); }
 
+  .calc-result {
+    display: flex; align-items: baseline; flex-wrap: wrap; gap: 8px;
+    margin-top: 14px; padding: 12px 16px;
+    background: var(--card-stub); border: 1px solid var(--line); border-left: 3px solid var(--accent);
+    border-radius: 8px;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+  }
+  .calc-result-label {
+    font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-soft);
+  }
+  .calc-result-value { font-size: 17px; font-weight: 800; color: var(--accent); }
+  .calc-result-note { font-size: 11px; color: var(--ink-soft); }
+  @media (prefers-reduced-motion: no-preference) {
+    .calc-result.updated { animation: calc-pulse 0.4s ease; }
+  }
+  @keyframes calc-pulse { 0% { background: var(--success-bg); } 100% { background: var(--card-stub); } }
+
   .btn {
     display: inline-flex; align-items: center; justify-content: center; gap: 6px; border: none; border-radius: 7px;
     font-weight: 700; font-size: 14px; cursor: pointer; padding: 12px 20px; background: var(--accent); color: var(--accent-ink);
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    transition: transform 0.2s cubic-bezier(.2,.8,.2,1), box-shadow 0.2s cubic-bezier(.2,.8,.2,1);
   }
-  .btn:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(169,127,52,0.28); }
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(13,71,161,0.30); }
   .btn:active { transform: translateY(0); }
   .btn-block { width: 100%; margin-top: 18px; }
 
@@ -181,16 +198,18 @@
   }
   .seal {
     width: 96px; height: 96px; border-radius: 50%;
-    border: 2px solid var(--seal);
-    color: var(--seal);
+    border: 2px solid var(--accent);
+    color: var(--accent);
     display: flex; align-items: center; justify-content: center;
     text-align: center;
     font-family: 'Noto Serif KR', serif; font-weight: 700; font-size: 13px; letter-spacing: 0.02em;
     transform: rotate(-8deg);
     position: relative;
+    transition: transform 0.3s cubic-bezier(.2,.8,.2,1);
   }
+  .passbook:hover .seal { transform: rotate(0deg) scale(1.04); }
   .seal::before {
-    content: ""; position: absolute; inset: 7px; border: 1px solid var(--seal); border-radius: 50%; opacity: .5;
+    content: ""; position: absolute; inset: 7px; border: 1px solid var(--accent); border-radius: 50%; opacity: .5;
   }
   .cover-label { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-soft); text-align: center; }
 
@@ -284,8 +303,19 @@
     .reason-list li { text-align: left; }
   }
 
+  .sort-bar { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+  .sort-label { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-soft); margin-right: 2px; }
+  .sort-btn {
+    font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; color: var(--ink-soft);
+    background: var(--card); border: 1px solid var(--line); border-radius: 6px; padding: 6px 12px;
+    cursor: pointer; transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
+  }
+  .sort-btn:hover { color: var(--accent); border-color: var(--line-strong); transform: translateY(-1px); }
+  .sort-btn.active { color: var(--accent-ink); background: var(--accent); border-color: var(--accent); font-weight: 700; }
+
   /* ---------- comparison: ledger entry cards ---------- */
-  .plans { display: flex; flex-direction: column; gap: 14px; }
+  .plans { display: flex; flex-direction: column; gap: 14px; transition: opacity 0.18s ease; }
+  .plans.resorting { opacity: 0.35; }
   .ledger-entry {
     background: var(--card);
     border: 1px solid var(--line);
@@ -295,9 +325,12 @@
     display: grid;
     grid-template-columns: 190px 1fr;
     overflow: hidden;
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    transition: box-shadow 0.25s cubic-bezier(.2,.8,.2,1), border-color 0.25s ease;
   }
-  .ledger-entry:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(13,24,48,0.08), 0 16px 32px rgba(13,24,48,0.12); }
+  .ledger-entry:hover {
+    box-shadow: 0 6px 12px rgba(13,45,110,0.10), 0 20px 40px rgba(13,45,110,0.14);
+    border-color: var(--line-strong);
+  }
 
   .ledger-stub {
     background: var(--card-stub);
@@ -608,6 +641,11 @@
               </select>
             </div>
           </div>
+          <div class="calc-result" id="calcResult" aria-live="polite">
+            <span class="calc-result-label">예상 세액공제액</span>
+            <span class="calc-result-value mono" id="calcResultValue">연 납입액을 입력해보세요</span>
+            <span class="calc-result-note mono" id="calcResultNote"></span>
+          </div>
           <button type="button" class="btn btn-block" onclick="document.getElementById('plans').scrollIntoView({behavior:'smooth'})">기관별 비교 보기</button>
         </div>
         <div class="passbook-cover">
@@ -668,9 +706,16 @@
         <span>아래 기관명·보수·사업비는 실제 상품공시 데이터 연동 전까지 사용하는 예시 수치입니다. 고객 상담 시에는 각 사의 최신 상품공시자료 기준으로 안내해 주세요.</span>
       </div>
 
-      <div class="plans">
+      <div class="sort-bar" role="group" aria-label="비교 원장 정렬">
+        <span class="sort-label">정렬</span>
+        <button type="button" class="sort-btn active" data-sort="default">AI 매칭순</button>
+        <button type="button" class="sort-btn" data-sort="fee">수수료 낮은순</button>
+        <button type="button" class="sort-btn" data-sort="name">기관명순</button>
+      </div>
 
-        <div class="ledger-entry rise">
+      <div class="plans" id="plans-list">
+
+        <div class="ledger-entry rise" data-fee="0.18" data-match="94" data-name="C증권">
           <div class="ledger-stub">
             <div>
               <div class="inst-name">C증권</div>
@@ -714,7 +759,7 @@
           </div>
         </div>
 
-        <div class="ledger-entry rise rise-delay-1">
+        <div class="ledger-entry rise rise-delay-1" data-fee="0.25" data-match="88" data-name="A증권">
           <div class="ledger-stub">
             <div>
               <div class="inst-name">A증권</div>
@@ -758,7 +803,7 @@
           </div>
         </div>
 
-        <div class="ledger-entry rise rise-delay-2">
+        <div class="ledger-entry rise rise-delay-2" data-fee="0.30" data-match="72" data-name="B은행">
           <div class="ledger-stub">
             <div>
               <div class="inst-name">B은행</div>
@@ -802,7 +847,7 @@
           </div>
         </div>
 
-        <div class="ledger-entry rise rise-delay-2">
+        <div class="ledger-entry rise rise-delay-2" data-fee="0.35" data-match="61" data-name="D생명">
           <div class="ledger-stub">
             <div>
               <div class="inst-name">D생명</div>
@@ -859,26 +904,26 @@
     <div class="wrap">
       <div class="section-head">
         <h2 class="section-title"><span class="idx">§03</span>세액공제 산출 내역</h2>
-        <span class="section-note">연 납입 900만원 · 총급여 5,500만원 이하 기준</span>
+        <span class="section-note" id="taxCalcSummary">연 납입 900만원 · 총급여 5,500만원 이하 기준</span>
       </div>
 
       <div class="calc-breakdown">
         <div class="calc-table">
           <div class="c-row">
             <div><div class="c-label">연간 납입액 (입력값)</div><div class="c-formula mono">INPUT</div></div>
-            <div class="c-val">9,000,000원</div>
+            <div class="c-val" id="calcRowInput">9,000,000원</div>
           </div>
           <div class="c-row">
-            <div><div class="c-label">세액공제 대상 한도</div><div class="c-formula mono">MIN(납입액, 9,000,000) · 연금저축 합산</div></div>
-            <div class="c-val">9,000,000원</div>
+            <div><div class="c-label">세액공제 대상 한도</div><div class="c-formula mono" id="calcRowLimitFormula">MIN(납입액, 9,000,000) · 연금저축 합산</div></div>
+            <div class="c-val" id="calcRowLimitVal">9,000,000원</div>
           </div>
           <div class="c-row">
-            <div><div class="c-label">적용 공제율 (지방소득세 포함)</div><div class="c-formula mono">총급여 5,500만원 이하 구간</div></div>
-            <div class="c-val">16.5%</div>
+            <div><div class="c-label">적용 공제율 (지방소득세 포함)</div><div class="c-formula mono" id="calcRowRateFormula">총급여 5,500만원 이하 구간</div></div>
+            <div class="c-val" id="calcRowRateVal">16.5%</div>
           </div>
           <div class="c-row total">
-            <div><div class="c-label"><b>예상 세액공제액</b></div><div class="c-formula mono">9,000,000 × 16.5%</div></div>
-            <div class="c-val">1,485,000원</div>
+            <div><div class="c-label"><b>예상 세액공제액</b></div><div class="c-formula mono" id="calcRowTotalFormula">9,000,000 × 16.5%</div></div>
+            <div class="c-val" id="calcRowTotalVal">1,485,000원</div>
           </div>
         </div>
         <div class="calc-note">
@@ -1128,7 +1173,7 @@
         <input type="text" id="website" name="website" autocomplete="off" tabindex="-1" style="position:absolute; left:-9999px; width:1px; height:1px; opacity:0;" aria-hidden="true">
         <button type="submit" class="btn btn-block" id="consultSubmitBtn">상담 신청하기</button>
         <div class="consult-success" id="consultSuccess">신청이 접수되었습니다. 담당자가 남겨주신 연락처로 안내드립니다.</div>
-        <div class="consult-success" id="consultError" style="display:none; background:rgba(140,42,30,0.1); color:var(--seal);">신청에 실패했습니다. 잠시 후 다시 시도해주세요.</div>
+        <div class="consult-success" id="consultError" style="display:none; background:rgba(198,40,40,0.1); color:var(--seal);">신청에 실패했습니다. 잠시 후 다시 시도해주세요.</div>
       </form>
     </div>
   </section>
@@ -1172,6 +1217,94 @@
       }, { rootMargin: '-88px 0px -70% 0px', threshold: 0 });
 
       sections.forEach(function (section) { observer.observe(section); });
+    })();
+
+    (function () {
+      var amountEl = document.getElementById('amount');
+      var salaryEl = document.getElementById('salary');
+      var resultBox = document.getElementById('calcResult');
+      var valueEl = document.getElementById('calcResultValue');
+      var noteEl = document.getElementById('calcResultNote');
+      var CAP = 9000000; // IRP + 연금저축 합산 세액공제 한도 900만원
+
+      var summaryEl = document.getElementById('taxCalcSummary');
+      var rowInput = document.getElementById('calcRowInput');
+      var rowLimitFormula = document.getElementById('calcRowLimitFormula');
+      var rowLimitVal = document.getElementById('calcRowLimitVal');
+      var rowRateFormula = document.getElementById('calcRowRateFormula');
+      var rowRateVal = document.getElementById('calcRowRateVal');
+      var rowTotalFormula = document.getElementById('calcRowTotalFormula');
+      var rowTotalVal = document.getElementById('calcRowTotalVal');
+
+      function won(n) { return n.toLocaleString('ko-KR') + '원'; }
+
+      function updateCalc() {
+        var man = parseFloat(amountEl.value);
+        var overBracket = salaryEl.value.indexOf('초과') !== -1;
+        var rate = overBracket ? 0.132 : 0.165;
+
+        if (!man || man <= 0) {
+          valueEl.textContent = '연 납입액을 입력해보세요';
+          noteEl.textContent = '';
+        } else {
+          var amount = man * 10000;
+          var base = Math.min(amount, CAP);
+          var deduction = Math.round(base * rate);
+          valueEl.textContent = '약 ' + deduction.toLocaleString('ko-KR') + '원';
+          noteEl.textContent = '공제 대상 ' + base.toLocaleString('ko-KR') + '원 × ' + (rate * 100).toFixed(1) + '%'
+            + (amount > CAP ? ' (한도 900만원 초과분 제외)' : '');
+
+          if (summaryEl) summaryEl.textContent = '연 납입 ' + man.toLocaleString('ko-KR') + '만원 · 총급여 ' + (overBracket ? '5,500만원 초과' : '5,500만원 이하') + ' 기준';
+          if (rowInput) rowInput.textContent = won(amount);
+          if (rowLimitFormula) rowLimitFormula.textContent = 'MIN(납입액, ' + CAP.toLocaleString('ko-KR') + ') · 연금저축 합산';
+          if (rowLimitVal) rowLimitVal.textContent = won(base);
+          if (rowRateFormula) rowRateFormula.textContent = '총급여 ' + (overBracket ? '5,500만원 초과' : '5,500만원 이하') + ' 구간';
+          if (rowRateVal) rowRateVal.textContent = (rate * 100).toFixed(1) + '%';
+          if (rowTotalFormula) rowTotalFormula.textContent = amount.toLocaleString('ko-KR') + ' × ' + (rate * 100).toFixed(1) + '%';
+          if (rowTotalVal) rowTotalVal.textContent = won(deduction);
+        }
+        resultBox.classList.remove('updated');
+        void resultBox.offsetWidth;
+        resultBox.classList.add('updated');
+      }
+
+      amountEl.addEventListener('input', updateCalc);
+      salaryEl.addEventListener('change', updateCalc);
+    })();
+
+    (function () {
+      var list = document.getElementById('plans-list');
+      var buttons = document.querySelectorAll('.sort-btn');
+      if (!list || !buttons.length) return;
+      var defaultOrder = Array.prototype.slice.call(list.children);
+
+      function sortBy(mode) {
+        var items;
+        if (mode === 'fee') {
+          items = Array.prototype.slice.call(list.children).sort(function (a, b) {
+            return parseFloat(a.dataset.fee) - parseFloat(b.dataset.fee);
+          });
+        } else if (mode === 'name') {
+          items = Array.prototype.slice.call(list.children).sort(function (a, b) {
+            return a.dataset.name.localeCompare(b.dataset.name, 'ko');
+          });
+        } else {
+          items = defaultOrder;
+        }
+        list.classList.add('resorting');
+        setTimeout(function () {
+          items.forEach(function (el) { list.appendChild(el); });
+          list.classList.remove('resorting');
+        }, 180);
+      }
+
+      buttons.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          buttons.forEach(function (b) { b.classList.remove('active'); });
+          btn.classList.add('active');
+          sortBy(btn.dataset.sort);
+        });
+      });
     })();
 
     function selectPlan(name) {
