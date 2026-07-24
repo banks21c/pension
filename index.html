@@ -230,6 +230,12 @@
     letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); border: 1px solid var(--accent);
     border-radius: 3px; padding: 2px 7px;
   }
+  .best-fee-badge {
+    display: inline-flex; align-items: center; gap: 4px; margin-top: 6px; margin-left: 6px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.05em; text-transform: uppercase;
+    color: var(--success); background: var(--success-bg); border: 1px solid var(--success);
+    border-radius: 3px; padding: 2px 7px;
+  }
   .acct-no { margin-top: 14px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--ink-soft); }
 
   .ledger-body { padding: 20px 22px; display: flex; flex-direction: column; gap: 16px; }
@@ -246,7 +252,10 @@
   @media (max-width: 700px) {
     .ledger-entry { grid-template-columns: 1fr; }
     .ledger-stub { border-right: none; border-bottom: 1px solid var(--line); flex-direction: row; align-items: center; justify-content: space-between; }
-    .ledger-grid { grid-template-columns: 1fr 1fr; }
+    .ledger-body { padding: 16px 18px; gap: 14px; }
+    .ledger-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+    .ledger-footer { flex-direction: column; align-items: stretch; gap: 12px; }
+    .ledger-footer .btn { width: 100%; }
     .ledger-footer { flex-direction: column; align-items: stretch; }
   }
 
@@ -396,10 +405,10 @@
           </div>
           <div class="ledger-body">
             <div class="ledger-grid">
+              <div class="ledger-item"><div class="k">국내상장 ETF</div><div class="v">직접 매매 가능</div></div>
               <div class="ledger-item"><div class="k">세액공제한도</div><div class="v">연 600만원</div></div>
               <div class="ledger-item"><div class="k">최소유지기간</div><div class="v">5년 + 만55세</div></div>
               <div class="ledger-item"><div class="k">납입한도</div><div class="v">연 1,800만원</div></div>
-              <div class="ledger-item"><div class="k">국내상장 ETF</div><div class="v">직접 매매 가능</div></div>
             </div>
             <div class="ledger-feature">국내 상장 ETF를 계좌 안에서 직접 매매할 수 있는 펀드형. 운용 성과가 그대로 계좌에 반영된다.</div>
             <div class="ledger-footer">
@@ -419,10 +428,10 @@
           </div>
           <div class="ledger-body">
             <div class="ledger-grid">
+              <div class="ledger-item"><div class="k">국내상장 ETF</div><div class="v">불가(공시이율 적용)</div></div>
               <div class="ledger-item"><div class="k">세액공제한도</div><div class="v">연 600만원</div></div>
               <div class="ledger-item"><div class="k">최소유지기간</div><div class="v">5년 + 만55세</div></div>
               <div class="ledger-item"><div class="k">납입한도</div><div class="v">연 1,800만원</div></div>
-              <div class="ledger-item"><div class="k">국내상장 ETF</div><div class="v">불가(공시이율 적용)</div></div>
             </div>
             <div class="ledger-feature">매월 정해진 금액을 납입하는 공시이율형. 원금 손실 부담 없이 안정적으로 노후자금을 모으고 싶을 때 적합.</div>
             <div class="ledger-footer">
@@ -442,10 +451,10 @@
           </div>
           <div class="ledger-body">
             <div class="ledger-grid">
+              <div class="ledger-item"><div class="k">국내상장 ETF</div><div class="v">직접 매매 가능</div></div>
               <div class="ledger-item"><div class="k">세액공제한도</div><div class="v">연 600만원</div></div>
               <div class="ledger-item"><div class="k">최소유지기간</div><div class="v">5년 + 만55세</div></div>
               <div class="ledger-item"><div class="k">납입한도</div><div class="v">연 1,800만원</div></div>
-              <div class="ledger-item"><div class="k">국내상장 ETF</div><div class="v">직접 매매 가능</div></div>
             </div>
             <div class="ledger-feature">모델포트폴리오 기반 자동 리밸런싱을 제공하는 온라인 전용 상품. 비대면 개설 시 보수 추가 할인(예시).</div>
             <div class="ledger-footer">
@@ -465,10 +474,10 @@
           </div>
           <div class="ledger-body">
             <div class="ledger-grid">
+              <div class="ledger-item"><div class="k">국내상장 ETF</div><div class="v">불가(공시이율 적용)</div></div>
               <div class="ledger-item"><div class="k">세액공제한도</div><div class="v">연 600만원</div></div>
               <div class="ledger-item"><div class="k">최소유지기간</div><div class="v">5년 + 만55세</div></div>
               <div class="ledger-item"><div class="k">납입한도</div><div class="v">연 1,800만원</div></div>
-              <div class="ledger-item"><div class="k">국내상장 ETF</div><div class="v">불가(공시이율 적용)</div></div>
             </div>
             <div class="ledger-feature">설계사를 거치지 않는 온라인 전용 가입으로 사업비를 낮춘 상품(예시). 중도해지 시 기타소득세 16.5% 부과 유의.</div>
             <div class="ledger-footer">
@@ -581,6 +590,21 @@
 
       amountEl.addEventListener('input', updateCalc);
       salaryEl.addEventListener('change', updateCalc);
+    })();
+
+    (function () {
+      var list = document.getElementById('plans-list');
+      if (!list) return;
+      var entries = Array.prototype.slice.call(list.children);
+      var lowest = entries.reduce(function (min, el) {
+        return parseFloat(el.dataset.fee) < parseFloat(min.dataset.fee) ? el : min;
+      }, entries[0]);
+      if (lowest) {
+        var badge = document.createElement('span');
+        badge.className = 'best-fee-badge';
+        badge.textContent = '최저수수료';
+        lowest.querySelector('.type-tag').insertAdjacentElement('afterend', badge);
+      }
     })();
 
     (function () {
