@@ -1213,7 +1213,7 @@
           </div>
           <div>
             <label for="phone">연락처</label>
-            <input id="phone" type="tel" required placeholder="010-1234-5678">
+            <input id="phone" type="tel" required placeholder="010-1234-5678" pattern="01[0-9]-?[0-9]{3,4}-?[0-9]{4}" title="010-1234-5678 형식으로 입력해주세요">
           </div>
           <div>
             <label for="planField">관심 기관</label>
@@ -1493,10 +1493,14 @@
             successEl.style.display = 'block';
             form.reset();
           } else {
+            errorEl.textContent = data.error || '신청에 실패했습니다. 잠시 후 다시 시도해주세요.';
             errorEl.style.display = 'block';
           }
         })
-        .catch(() => { errorEl.style.display = 'block'; })
+        .catch(() => {
+          errorEl.textContent = '네트워크 오류로 신청에 실패했습니다. 잠시 후 다시 시도해주세요.';
+          errorEl.style.display = 'block';
+        })
         .finally(() => {
           btn.disabled = false;
           btn.textContent = '상담 신청하기';
