@@ -344,7 +344,19 @@
     letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); border: 1px solid var(--accent);
     border-radius: 3px; padding: 2px 7px;
   }
-  .acct-no { margin-top: 14px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--ink-soft); }
+  .best-fee-badge {
+    display: inline-flex; align-items: center; gap: 4px; margin-top: 6px; margin-left: 6px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.05em; text-transform: uppercase;
+    color: var(--success); background: var(--success-bg); border: 1px solid var(--success);
+    border-radius: 3px; padding: 2px 7px;
+  }
+  .acct-footer { margin-top: 14px; }
+  .acct-no { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--ink-soft); }
+  .compare-check {
+    display: inline-flex; align-items: center; gap: 5px; margin-top: 10px;
+    font-size: 11.5px; color: var(--ink-soft); cursor: pointer; user-select: none;
+  }
+  .compare-check input { accent-color: var(--accent); cursor: pointer; }
 
   .match-mini { margin-top: 12px; }
   .match-mini .m-pct { font-family: 'IBM Plex Mono', monospace; font-size: 15px; font-weight: 700; }
@@ -401,7 +413,8 @@
     .ledger-stub { border-right: none; border-bottom: 1px solid var(--line); flex-direction: row; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
     .match-mini { margin-top: 0; min-width: 90px; }
     .ledger-grid { grid-template-columns: 1fr 1fr; }
-    .ledger-footer { flex-direction: column; align-items: stretch; }
+    .ledger-footer { flex-direction: column; align-items: stretch; gap: 12px; }
+    .ledger-footer .btn { width: 100%; }
   }
 
   .terms-strip {
@@ -562,6 +575,46 @@
   .footer-row { display: flex; flex-direction: column; gap: 8px; }
   .footer-brand { font-family: 'Noto Serif KR', serif; font-weight: 700; font-size: 14px; }
   .footer-note { font-size: 12px; color: var(--ink-soft); max-width: 60ch; line-height: 1.7; }
+  /* ---------- compare bar & modal ---------- */
+  .compare-bar {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 200;
+    display: flex; align-items: center; justify-content: center; gap: 16px;
+    background: var(--card); border-top: 1px solid var(--line-strong); box-shadow: 0 -4px 16px rgba(13,45,110,0.12);
+    padding: 12px 24px;
+  }
+  .compare-bar-text { font-size: 13px; color: var(--ink-soft); }
+  .compare-bar-text b { color: var(--ink); font-weight: 700; }
+  .compare-bar .btn-ghost {
+    background: transparent; border: 1px solid var(--line-strong); color: var(--ink-soft);
+    border-radius: 7px; padding: 10px 16px; font-size: 13px; font-weight: 600; cursor: pointer;
+  }
+
+  .modal-overlay {
+    position: fixed; inset: 0; z-index: 300; background: rgba(13,24,48,0.5);
+    display: flex; align-items: center; justify-content: center; padding: 24px;
+  }
+  .modal-box {
+    background: var(--card); border-radius: 12px; box-shadow: var(--shadow);
+    max-width: 860px; width: 100%; max-height: 84vh; overflow: auto; padding: 28px 32px;
+  }
+  .modal-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 18px; }
+  .modal-title { font-size: 18px; font-weight: 800; }
+  .modal-close { background: transparent; border: 1px solid var(--line-strong); border-radius: 6px; color: var(--ink-soft); font-size: 13px; cursor: pointer; padding: 6px 12px; }
+  .compare-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .compare-table th, .compare-table td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  .compare-table th { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink-soft); }
+  .compare-table td.k-col { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink-soft); }
+
+  /* ---------- print ---------- */
+  .print-btn { background: transparent; border: 1px solid var(--line-strong); color: var(--ink-soft); border-radius: 6px; padding: 7px 14px; font-size: 12.5px; font-weight: 600; cursor: pointer; }
+  @media print {
+    header, .toc-bar, .compare-bar, .modal-overlay, .sort-bar, .demo-warning,
+    .compare-check, .btn, .print-btn, #cookieConsentBanner, section#consult, .passbook-cover,
+    .factor-detail, details.factor-detail summary { display: none !important; }
+    body { background: #fff; color: #000; }
+    .ledger-entry { break-inside: avoid; box-shadow: none; border: 1px solid #999; margin-bottom: 10px; }
+    .wrap { max-width: 100%; padding: 0; }
+  }
 </style>
 </head>
 <body>
@@ -711,6 +764,7 @@
         <button type="button" class="sort-btn active" data-sort="default">AI 매칭순</button>
         <button type="button" class="sort-btn" data-sort="fee">수수료 낮은순</button>
         <button type="button" class="sort-btn" data-sort="name">기관명순</button>
+        <button type="button" class="print-btn" style="margin-left:auto" onclick="window.print()">🖨 인쇄용 요약</button>
       </div>
 
       <div class="plans" id="plans-list">
@@ -727,14 +781,17 @@
               <div class="m-ci">95% CI 91–97%</div>
               <div class="m-bar"><span style="width:94%;"></span></div>
             </div>
-            <div class="acct-no mono">IRP-DEMO-03</div>
+            <div class="acct-footer">
+              <div class="acct-no mono">IRP-DEMO-03</div>
+              <label class="compare-check"><input type="checkbox" class="compare-cb" onchange="toggleCompare(this)"> 비교에 추가</label>
+            </div>
           </div>
           <div class="ledger-body">
             <div class="ledger-grid">
-              <div class="ledger-item"><div class="k">세액공제한도</div><div class="v">연금저축 합산 900만원</div></div>
-              <div class="ledger-item"><div class="k">최소유지기간</div><div class="v">5년 + 만55세</div></div>
               <div class="ledger-item"><div class="k">위험자산한도</div><div class="v">적립금의 70%</div></div>
               <div class="ledger-item"><div class="k">국내상장 ETF</div><div class="v">직접 매매 가능</div></div>
+              <div class="ledger-item"><div class="k">세액공제한도</div><div class="v">연금저축 합산 900만원</div></div>
+              <div class="ledger-item"><div class="k">최소유지기간</div><div class="v">5년 + 만55세</div></div>
             </div>
             <div class="ledger-feature">TDF(타겟데이트펀드)로 은퇴 시점에 맞춰 위험자산 비중을 자동 조정하는 로보어드바이저형. 비대면 개설 시 보수 할인(예시).</div>
             <div class="ai-note"><span class="tag">AI</span>30년 누적 비용 약 729만원으로 비교군 중 최저 — D생명 대비 약 689만원 절감 예상(95% CI ±38만원). 주요 기여 피처는 수수료율(32%)과 위험자산한도 적합성(24%)입니다.</div>
@@ -771,14 +828,17 @@
               <div class="m-ci">95% CI 84–91%</div>
               <div class="m-bar"><span style="width:88%;"></span></div>
             </div>
-            <div class="acct-no mono">IRP-DEMO-01</div>
+            <div class="acct-footer">
+              <div class="acct-no mono">IRP-DEMO-01</div>
+              <label class="compare-check"><input type="checkbox" class="compare-cb" onchange="toggleCompare(this)"> 비교에 추가</label>
+            </div>
           </div>
           <div class="ledger-body">
             <div class="ledger-grid">
-              <div class="ledger-item"><div class="k">세액공제한도</div><div class="v">연금저축 합산 900만원</div></div>
-              <div class="ledger-item"><div class="k">최소유지기간</div><div class="v">5년 + 만55세</div></div>
               <div class="ledger-item"><div class="k">위험자산한도</div><div class="v">적립금의 70%</div></div>
               <div class="ledger-item"><div class="k">국내상장 ETF</div><div class="v">직접 매매 가능</div></div>
+              <div class="ledger-item"><div class="k">세액공제한도</div><div class="v">연금저축 합산 900만원</div></div>
+              <div class="ledger-item"><div class="k">최소유지기간</div><div class="v">5년 + 만55세</div></div>
             </div>
             <div class="ledger-feature">국내 상장 ETF·리츠를 계좌 안에서 직접 매매할 수 있는 증권형. 안전자산 30%는 예금·채권형으로 별도 편입해야 한다.</div>
             <div class="ai-note"><span class="tag">AI</span>ETF 직접운용 선호 성향과 위험자산한도 적합성의 기여도가 높게 반영되었습니다. 30년 누적 비용은 C증권 대비 약 284만원 높게 예측됩니다(95% CI ±29만원).</div>
@@ -815,14 +875,17 @@
               <div class="m-ci">95% CI 66–77%</div>
               <div class="m-bar"><span style="width:72%;"></span></div>
             </div>
-            <div class="acct-no mono">IRP-DEMO-02</div>
+            <div class="acct-footer">
+              <div class="acct-no mono">IRP-DEMO-02</div>
+              <label class="compare-check"><input type="checkbox" class="compare-cb" onchange="toggleCompare(this)"> 비교에 추가</label>
+            </div>
           </div>
           <div class="ledger-body">
             <div class="ledger-grid">
-              <div class="ledger-item"><div class="k">세액공제한도</div><div class="v">연금저축 합산 900만원</div></div>
-              <div class="ledger-item"><div class="k">최소유지기간</div><div class="v">5년 + 만55세</div></div>
               <div class="ledger-item"><div class="k">위험자산한도</div><div class="v">해당 없음(전액 원리금보장)</div></div>
               <div class="ledger-item"><div class="k">국내상장 ETF</div><div class="v">불가(예금형 상품 중심)</div></div>
+              <div class="ledger-item"><div class="k">세액공제한도</div><div class="v">연금저축 합산 900만원</div></div>
+              <div class="ledger-item"><div class="k">최소유지기간</div><div class="v">5년 + 만55세</div></div>
             </div>
             <div class="ledger-feature">정기예금형 원리금보장 상품 위주로 구성. 5,000만원까지 예금자보호가 적용되어 안정성을 우선하는 가입자에게 적합.</div>
             <div class="ai-note"><span class="tag">AI</span>원리금보장형 선호 시 적합하나, 30년 누적 비용은 C증권 대비 약 486만원 높게 예측됩니다(95% CI ±44만원). 급여구간별 공제활용도 기여는 상대적으로 낮게 반영되었습니다.</div>
@@ -859,14 +922,17 @@
               <div class="m-ci">95% CI 54–67%</div>
               <div class="m-bar"><span style="width:61%;"></span></div>
             </div>
-            <div class="acct-no mono">IRP-DEMO-04</div>
+            <div class="acct-footer">
+              <div class="acct-no mono">IRP-DEMO-04</div>
+              <label class="compare-check"><input type="checkbox" class="compare-cb" onchange="toggleCompare(this)"> 비교에 추가</label>
+            </div>
           </div>
           <div class="ledger-body">
             <div class="ledger-grid">
-              <div class="ledger-item"><div class="k">세액공제한도</div><div class="v">연금저축 합산 900만원</div></div>
-              <div class="ledger-item"><div class="k">최소유지기간</div><div class="v">5년 + 만55세</div></div>
               <div class="ledger-item"><div class="k">위험자산한도</div><div class="v">해당 없음(전액 원리금보장)</div></div>
               <div class="ledger-item"><div class="k">국내상장 ETF</div><div class="v">불가(공시이율 적용)</div></div>
+              <div class="ledger-item"><div class="k">세액공제한도</div><div class="v">연금저축 합산 900만원</div></div>
+              <div class="ledger-item"><div class="k">최소유지기간</div><div class="v">5년 + 만55세</div></div>
             </div>
             <div class="ledger-feature">퇴직금을 이전받아 공시이율형 상품으로 운용하는 안정형 구성. 중도인출은 법정 사유(무주택자 주택구입 등)에 한해서만 가능.</div>
             <div class="ai-note"><span class="tag">AI</span>안전자산 선호는 반영되나 사업비 부담으로 30년 누적 비용이 비교군 중 최고로 예측됩니다(약 1,418만원, C증권 대비 +689만원, 95% CI ±52만원).</div>
@@ -1274,6 +1340,21 @@
 
     (function () {
       var list = document.getElementById('plans-list');
+      if (!list) return;
+      var entries = Array.prototype.slice.call(list.children);
+      var lowest = entries.reduce(function (min, el) {
+        return parseFloat(el.dataset.fee) < parseFloat(min.dataset.fee) ? el : min;
+      }, entries[0]);
+      if (lowest) {
+        var badge = document.createElement('span');
+        badge.className = 'best-fee-badge';
+        badge.textContent = '최저수수료';
+        lowest.querySelector('.type-tag').insertAdjacentElement('afterend', badge);
+      }
+    })();
+
+    (function () {
+      var list = document.getElementById('plans-list');
       var buttons = document.querySelectorAll('.sort-btn');
       if (!list || !buttons.length) return;
       var defaultOrder = Array.prototype.slice.call(list.children);
@@ -1306,6 +1387,65 @@
         });
       });
     })();
+
+    var compareSet = new Set();
+
+    function toggleCompare(cb) {
+      var card = cb.closest('.ledger-entry');
+      var name = card.dataset.name;
+      if (cb.checked) { compareSet.add(name); } else { compareSet.delete(name); }
+      var bar = document.getElementById('compareBar');
+      document.getElementById('compareCount').textContent = compareSet.size;
+      bar.style.display = compareSet.size >= 2 ? 'flex' : 'none';
+    }
+
+    function clearCompare() {
+      compareSet.clear();
+      document.querySelectorAll('.compare-cb').forEach(function (cb) { cb.checked = false; });
+      document.getElementById('compareBar').style.display = 'none';
+      closeCompareModal();
+    }
+
+    function openCompareModal() {
+      var cards = Array.prototype.slice.call(document.querySelectorAll('.ledger-entry')).filter(function (c) {
+        return compareSet.has(c.dataset.name);
+      });
+      if (!cards.length) return;
+
+      var rows = [
+        { label: '유형', get: function (c) { return c.querySelector('.type-tag').textContent; } },
+        { label: 'AI 매칭', get: function (c) { return c.dataset.match ? c.dataset.match + '%' : '-'; } }
+      ];
+      var gridItemCount = cards[0].querySelectorAll('.ledger-item').length;
+      for (var i = 0; i < gridItemCount; i++) {
+        (function (idx) {
+          var label = cards[0].querySelectorAll('.ledger-item')[idx].querySelector('.k').textContent;
+          rows.push({ label: label, get: function (c) {
+            var items = c.querySelectorAll('.ledger-item');
+            return items[idx] ? items[idx].querySelector('.v').textContent : '-';
+          }});
+        })(i);
+      }
+      rows.push({ label: '수수료', get: function (c) {
+        return c.querySelector('.fee .k').textContent + ' ' + c.querySelector('.fee .v').textContent;
+      }});
+
+      var html = '<table class="compare-table"><thead><tr><th></th>';
+      cards.forEach(function (c) { html += '<th>' + c.dataset.name + '</th>'; });
+      html += '</tr></thead><tbody>';
+      rows.forEach(function (row) {
+        html += '<tr><td class="k-col">' + row.label + '</td>';
+        cards.forEach(function (c) { html += '<td>' + row.get(c) + '</td>'; });
+        html += '</tr>';
+      });
+      html += '</tbody></table>';
+      document.getElementById('compareTableWrap').innerHTML = html;
+      document.getElementById('compareModal').style.display = 'flex';
+    }
+
+    function closeCompareModal() {
+      document.getElementById('compareModal').style.display = 'none';
+    }
 
     function selectPlan(name) {
       document.getElementById('planField').value = name;
@@ -1351,6 +1491,22 @@
       return false;
     }
   </script>
+
+  <div id="compareBar" class="compare-bar" style="display:none;">
+    <span class="compare-bar-text"><b id="compareCount">0</b>개 상품 비교 중</span>
+    <button type="button" class="btn" onclick="openCompareModal()">비교표 보기</button>
+    <button type="button" class="btn-ghost" onclick="clearCompare()">초기화</button>
+  </div>
+
+  <div id="compareModal" class="modal-overlay" style="display:none;" onclick="if(event.target===this) closeCompareModal()">
+    <div class="modal-box">
+      <div class="modal-head">
+        <span class="modal-title">상품 비교</span>
+        <button type="button" class="modal-close" onclick="closeCompareModal()">닫기 ✕</button>
+      </div>
+      <div id="compareTableWrap"></div>
+    </div>
+  </div>
 
   <div id="cookieConsentBanner" style="display:none; position:fixed; bottom:0; left:0; right:0; z-index:9999; background:#16213a; color:#fff; padding:16px 20px; box-shadow:0 -4px 12px rgba(0,0,0,0.15); font-family:'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
     <div style="max-width:1100px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;">
