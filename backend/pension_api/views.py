@@ -48,7 +48,7 @@ def _client_ip(request):
 
 @require_POST
 def consult_submit(request):
-    """index.html / irp_upgraded.html의 상담 신청 폼이 호출하는 엔드포인트.
+    """index.html / irp/index.html의 상담 신청 폼이 호출하는 엔드포인트.
     DB가 없는 구성이라 var/consults.jsonl에 한 줄씩 append하고, 파일캐시로 IP당 레이트리밋만 건다."""
     website = (request.POST.get("website") or "").strip()
     if website:
