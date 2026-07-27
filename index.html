@@ -3,14 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NextFinUp - 연금저축 비교(데모)</title>
-<meta name="description" content="연 납입액과 총급여 구간만 입력하면 연금저축 취급기관별 보수·사업비와 세액공제 한도를 한눈에 비교해드립니다.">
-<meta property="og:type" content="website">
-<meta property="og:title" content="NextFinUp - 연금저축 비교(데모)">
-<meta property="og:description" content="연 납입액과 총급여 구간만 입력하면 연금저축 취급기관별 보수·사업비와 세액공제 한도를 한눈에 비교해드립니다.">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="NextFinUp - 연금저축 비교(데모)">
-<meta name="twitter:description" content="연 납입액과 총급여 구간만 입력하면 연금저축 취급기관별 보수·사업비와 세액공제 한도를 한눈에 비교해드립니다.">
+<title>NextFinUp - IRP 비교(데모)</title>
 <link rel="icon" type="image/x-icon" href="/static/articles/favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="/static/articles/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/static/articles/favicon-16x16.png">
@@ -19,7 +12,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;600;700&family=Noto+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    /* NextFinUp 브랜드 블루 — 홈페이지(nextfinup.com)와 동일 팔레트 */
+    /* NextFinUp 브랜드 블루 — index.html과 동일 팔레트 */
     --ink: #16213a;
     --ink-soft: #6c757d;
     --paper: #f4f6f9;
@@ -33,6 +26,8 @@
     --seal: #c62828;
     --success: #1e7e34;
     --success-bg: #e6f4ea;
+    --ml: #2f7a4d;
+    --dl: #6b4f8f;
     --shadow: 0 1px 2px rgba(13,45,110,0.08), 0 8px 24px rgba(13,45,110,0.10);
   }
   @media (prefers-color-scheme: dark) {
@@ -50,22 +45,27 @@
       --seal: #e57373;
       --success: #7fd19f;
       --success-bg: #163524;
+      --ml: #7fd19f;
+      --dl: #c3a3e8;
       --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 12px 32px rgba(0,0,0,0.4);
     }
   }
   :root[data-theme="dark"] {
     --ink: #eef1f7; --ink-soft: #9fb0c9; --paper: #0d1626; --card: #142238; --card-stub: #1b2c47;
     --line: #2c3e5c; --line-strong: #3f6fb0; --accent: #4d8ee0; --accent-soft: #7db3ee; --accent-ink: #0d1626;
-    --seal: #e57373; --success: #7fd19f; --success-bg: #163524; --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 12px 32px rgba(0,0,0,0.4);
+    --seal: #e57373; --success: #7fd19f; --success-bg: #163524; --ml: #7fd19f; --dl: #c3a3e8;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 12px 32px rgba(0,0,0,0.4);
   }
   :root[data-theme="light"] {
     --ink: #16213a; --ink-soft: #6c757d; --paper: #f4f6f9; --card: #ffffff; --card-stub: #eef3fb;
     --line: #dee2e6; --line-strong: #9fc0ff; --accent: #0d47a1; --accent-soft: #1e88e5; --accent-ink: #ffffff;
-    --seal: #c62828; --success: #1e7e34; --success-bg: #e6f4ea; --shadow: 0 1px 2px rgba(13,45,110,0.08), 0 8px 24px rgba(13,45,110,0.10);
+    --seal: #c62828; --success: #1e7e34; --success-bg: #e6f4ea; --ml: #2f7a4d; --dl: #6b4f8f;
+    --shadow: 0 1px 2px rgba(13,45,110,0.08), 0 8px 24px rgba(13,45,110,0.10);
   }
 
   * { box-sizing: border-box; }
-  html { color-scheme: light dark; }
+  html { color-scheme: light dark; scroll-behavior: smooth; }
+  section[id], #hero { scroll-margin-top: 54px; }
   body {
     margin: 0;
     background: var(--paper);
@@ -87,19 +87,46 @@
     .rise-delay-2 { animation-delay: .16s; }
     @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
   }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+  }
 
   header { padding: 18px 0 16px; border-bottom: 3px double var(--accent-soft); }
+
+  .toc-bar {
+    position: sticky; top: 0; z-index: 50;
+    background: var(--paper);
+    border-bottom: 1px solid var(--line);
+    box-shadow: 0 1px 0 rgba(0,0,0,0.02);
+  }
+  .toc-bar .wrap {
+    display: flex; gap: 4px; overflow-x: auto; padding: 9px 24px;
+    scrollbar-width: none;
+  }
+  .toc-bar .wrap::-webkit-scrollbar { display: none; }
+  .toc-link {
+    flex-shrink: 0; font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; letter-spacing: 0.03em;
+    color: var(--ink-soft); text-decoration: none; padding: 6px 12px; border-radius: 6px; white-space: nowrap;
+    border: 1px solid transparent; transition: color 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
+  }
+  .toc-link:hover { color: var(--ink); }
+  .toc-link.active { color: var(--accent); border-color: var(--line-strong); background: var(--card); font-weight: 700; }
   .back-link { font-size: 14.5px; color: var(--ink-soft); }
   .back-link:hover { color: var(--accent); }
   .brand-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 8px; flex-wrap: wrap; }
-  .brand { display: flex; align-items: baseline; gap: 8px; }
+  .brand { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
   .brand-mark { font-family: 'Noto Serif KR', serif; font-weight: 700; font-size: 20.5px; letter-spacing: -0.01em; }
   .brand-sub { font-size: 14.5px; color: var(--ink-soft); }
+  .ai-chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--ink-soft); border: 1px solid var(--line-strong); border-radius: 3px; padding: 3px 8px;
+  }
+  .ai-chip i { width: 5px; height: 5px; border-radius: 50%; background: var(--success); display: inline-block; }
   .demo-chip {
     font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; letter-spacing: 0.06em; text-transform: uppercase;
     color: var(--accent); border: 1px solid var(--accent); border-radius: 3px; padding: 3px 8px;
   }
-
   /* ---------- hero: passbook cover ---------- */
   .hero { padding: 40px 0; }
   .passbook {
@@ -118,7 +145,9 @@
     color: var(--ink-soft); margin-bottom: 14px;
   }
   .hero-title { font-size: 37px; font-weight: 800; letter-spacing: -0.01em; max-width: 22ch; }
-  .hero-desc { margin: 14px 0 28px; color: var(--ink-soft); font-size: 17px; max-width: 48ch; }
+  .hero-desc { margin: 14px 0 8px; color: var(--ink-soft); font-size: 17px; max-width: 48ch; }
+  .source-line { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--ink-soft); margin-bottom: 24px; }
+  .source-line a { text-decoration: underline; text-underline-offset: 2px; }
 
   .calc-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
   .field label {
@@ -131,39 +160,15 @@
   }
   .field input:focus, .field select:focus { border-color: var(--accent); }
 
-  .calc-result {
-    display: flex; align-items: baseline; flex-wrap: wrap; gap: 8px;
-    margin-top: 14px; padding: 12px 16px;
-    background: var(--card-stub); border: 1px solid var(--line); border-left: 3px solid var(--accent);
-    border-radius: 8px;
-    transition: border-color 0.2s ease, background-color 0.2s ease;
-  }
-  .calc-result-label {
-    font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-soft);
-  }
-  .calc-result-value { font-size: 19.5px; font-weight: 800; color: var(--accent); }
-  .calc-result-note { font-size: 12.5px; color: var(--ink-soft); }
-  @media (prefers-reduced-motion: no-preference) {
-    .calc-result.updated { animation: calc-pulse 0.4s ease; }
-  }
-  @keyframes calc-pulse { 0% { background: var(--success-bg); } 100% { background: var(--card-stub); } }
-
-  .calc-grid-sim { margin-top: 12px; }
-  .calc-result-sim { margin-top: 10px; }
-  .calc-sim-disclaimer {
-    flex-basis: 100%; font-size: 12px; color: var(--ink-soft); line-height: 1.5; margin-top: 4px;
-  }
-
   .btn {
     display: inline-flex; align-items: center; justify-content: center; gap: 6px; border: none; border-radius: 7px;
     font-weight: 700; font-size: 16px; cursor: pointer; padding: 12px 20px; background: var(--accent); color: var(--accent-ink);
-    transition: transform 0.2s cubic-bezier(.2,.8,.2,1), box-shadow 0.2s cubic-bezier(.2,.8,.2,1);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
   }
-  .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(13,71,161,0.30); }
+  .btn:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(13,71,161,0.28); }
   .btn:active { transform: translateY(0); }
   .btn-block { width: 100%; margin-top: 18px; }
 
-  /* passbook cover panel with wax-seal stamp */
   .passbook-cover {
     background: var(--card-stub);
     border-left: 1px solid var(--line);
@@ -176,18 +181,16 @@
   }
   .seal {
     width: 96px; height: 96px; border-radius: 50%;
-    border: 2px solid var(--accent);
-    color: var(--accent);
+    border: 2px solid var(--seal);
+    color: var(--seal);
     display: flex; align-items: center; justify-content: center;
     text-align: center;
     font-family: 'Noto Serif KR', serif; font-weight: 700; font-size: 15px; letter-spacing: 0.02em;
     transform: rotate(-8deg);
     position: relative;
-    transition: transform 0.3s cubic-bezier(.2,.8,.2,1);
   }
-  .passbook:hover .seal { transform: rotate(0deg) scale(1.04); }
   .seal::before {
-    content: ""; position: absolute; inset: 7px; border: 1px solid var(--accent); border-radius: 50%; opacity: .5;
+    content: ""; position: absolute; inset: 7px; border: 1px solid var(--seal); border-radius: 50%; opacity: .5;
   }
   .cover-label { font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-soft); text-align: center; }
 
@@ -199,23 +202,104 @@
 
   section { padding: 48px 0; }
   .section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
-  .section-title { font-size: 25.5px; font-weight: 800; display: flex; align-items: center; gap: 10px; }
-  .section-title::before { content: ""; width: 5px; height: 22px; border-radius: 3px; background: var(--accent); }
+  .section-title { font-size: 25.5px; font-weight: 800; display: flex; align-items: baseline; gap: 10px; }
+  .section-title .idx { font-family: 'IBM Plex Mono', monospace; font-size: 14px; color: var(--accent); font-weight: 600; }
   .section-note { font-size: 15px; color: var(--ink-soft); }
 
-  .sort-bar { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
-  .sort-label { font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-soft); margin-right: 2px; }
-  .sort-btn {
-    font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--ink-soft);
-    background: var(--card); border: 1px solid var(--line); border-radius: 6px; padding: 6px 12px;
-    cursor: pointer; transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
+  /* ---------- 데모 데이터 경고 배너 (AI 패널 바로 위, 가장 먼저 보이는 위치) ---------- */
+  .demo-warning {
+    display: flex; align-items: flex-start; gap: 10px;
+    background: var(--card-stub); color: var(--ink);
+    border: 1px solid var(--line); border-left: 3px solid var(--seal);
+    border-radius: 8px; padding: 12px 16px; margin-bottom: 14px;
+    font-size: 14.5px; line-height: 1.6;
   }
-  .sort-btn:hover { color: var(--accent); border-color: var(--line-strong); transform: translateY(-1px); }
-  .sort-btn.active { color: var(--accent-ink); background: var(--accent); border-color: var(--accent); font-weight: 700; }
+  .demo-warning b {
+    font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.08em;
+    text-transform: uppercase; flex-shrink: 0; color: var(--seal);
+    background: var(--card); border: 1px solid var(--seal);
+    border-radius: 3px; padding: 2px 7px; margin-top: 1px;
+  }
+
+  /* ---------- AI recommendation panel ---------- */
+  .ai-panel {
+    background: linear-gradient(160deg, var(--card) 0%, var(--card-stub) 130%);
+    border: 1px solid var(--line);
+    border-top: 3px solid var(--accent);
+    border-radius: 10px;
+    box-shadow: var(--shadow), 0 16px 40px -20px var(--accent);
+    display: grid;
+    grid-template-columns: 180px 1fr 220px;
+    gap: 28px;
+    padding: 30px 34px;
+    align-items: center;
+  }
+  .score-block { text-align: center; }
+  .top-match-badge {
+    display: inline-flex; align-items: center; gap: 4px; margin: 0 auto 12px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; font-weight: 700; letter-spacing: 0.08em;
+    color: var(--accent-ink); background: var(--accent);
+    border-radius: 20px; padding: 4px 11px;
+  }
+  .score-ring {
+    width: 110px; height: 110px; border-radius: 50%;
+    background: conic-gradient(var(--accent) 0% var(--ring-pct, 94%), var(--card-stub) var(--ring-pct, 94%) 100%);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 10px;
+    box-shadow: 0 0 0 1px var(--line), 0 0 0 6px color-mix(in srgb, var(--accent) 12%, transparent);
+  }
+  .score-ring .hole {
+    width: 84px; height: 84px; border-radius: 50%; background: var(--card);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+  }
+  .score-ring .num { font-family: 'IBM Plex Mono', monospace; font-size: 27.5px; font-weight: 700; }
+  .score-ring .pct { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--ink-soft); letter-spacing: 0.08em; }
+  .score-caption { font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); }
+
+  .ai-reasoning .ai-label {
+    font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 8px;
+  }
+  .ai-reasoning h3 { font-size: 20.5px; font-weight: 800; margin-bottom: 10px; line-height: 1.4; }
+  .ai-reasoning h3 b {
+    color: var(--accent-ink); background: var(--accent);
+    padding: 1px 8px; border-radius: 5px; box-decoration-break: clone; -webkit-box-decoration-break: clone;
+  }
+  .reason-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+  .reason-list li { font-size: 15px; color: var(--ink-soft); padding-left: 15px; position: relative; }
+  .reason-list li::before { content: "›"; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
+
+  .ai-meta {
+    font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--ink-soft);
+    border-left: 1px solid var(--line); padding-left: 22px; line-height: 1.5;
+  }
+  .ai-meta .row { display: flex; justify-content: space-between; gap: 12px; padding: 5px 0; border-bottom: 1px dashed var(--line); }
+  .ai-meta .row:last-child { border-bottom: none; }
+  .ai-meta .row b { font-weight: 600; color: var(--ink); }
+  .ai-meta .row .ml-txt { color: var(--ml); }
+  .ai-meta .row .dl-txt { color: var(--dl); }
+
+  .feat-vector { margin-top: 16px; grid-column: 1 / -1; }
+  .fv-label {
+    font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--ink-soft); margin-bottom: 5px;
+  }
+  .fv-code {
+    display: block; font-family: 'IBM Plex Mono', monospace; font-size: 12px; line-height: 1.7;
+    color: var(--ink-soft); background: var(--paper); border: 1px solid var(--line); border-radius: 6px;
+    padding: 9px 12px; overflow-x: auto; white-space: pre;
+  }
+  .fv-code .fv-key { color: var(--accent); }
+  .fv-code .fv-val { color: var(--ml); }
+
+  @media (max-width: 820px) {
+    .ai-panel { grid-template-columns: 1fr; text-align: center; }
+    .ai-meta { border-left: none; border-top: 1px solid var(--line); padding: 16px 0 0; }
+    .reason-list li { text-align: left; }
+  }
 
   /* ---------- comparison: ledger entry cards ---------- */
-  .plans { display: flex; flex-direction: column; gap: 14px; transition: opacity 0.18s ease; }
-  .plans.resorting { opacity: 0.35; }
+  .plans { display: flex; flex-direction: column; gap: 14px; }
   .ledger-entry {
     background: var(--card);
     border: 1px solid var(--line);
@@ -225,12 +309,9 @@
     display: grid;
     grid-template-columns: 190px 1fr;
     overflow: hidden;
-    transition: box-shadow 0.25s cubic-bezier(.2,.8,.2,1), border-color 0.25s ease;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
   }
-  .ledger-entry:hover {
-    box-shadow: 0 6px 12px rgba(13,45,110,0.10), 0 20px 40px rgba(13,45,110,0.14);
-    border-color: var(--line-strong);
-  }
+  .ledger-entry:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(13,45,110,0.08), 0 16px 32px rgba(13,45,110,0.12); }
 
   .ledger-stub {
     background: var(--card-stub);
@@ -244,27 +325,63 @@
     letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); border: 1px solid var(--accent);
     border-radius: 3px; padding: 2px 7px;
   }
-  .acct-footer { margin-top: 14px; }
-  .acct-no { font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; color: var(--ink-soft); }
+  .acct-no { margin-top: 14px; font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; color: var(--ink-soft); }
+
+  .match-mini { margin-top: 12px; }
+  .match-mini .m-pct { font-family: 'IBM Plex Mono', monospace; font-size: 17px; font-weight: 700; }
+  .match-mini .m-pct.high { color: var(--success); }
+  .match-mini .m-label { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); }
+  .match-mini .m-ci { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: var(--ink-soft); margin-top: 2px; opacity: 0.85; }
+  .match-mini .m-bar { margin-top: 4px; height: 4px; background: var(--line); border-radius: 2px; position: relative; overflow: hidden; }
+  .match-mini .m-bar span { position: absolute; left: 0; top: 0; bottom: 0; background: var(--accent); border-radius: 2px; }
 
   .ledger-body { padding: 20px 22px; display: flex; flex-direction: column; gap: 16px; }
   .ledger-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
   .ledger-item .k { font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.07em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 4px; }
   .ledger-item .v { font-size: 16px; font-weight: 600; }
   .ledger-feature { font-size: 14.5px; color: var(--ink-soft); border-top: 1px dashed var(--line); padding-top: 12px; }
+  .ai-note {
+    display: flex; gap: 8px; align-items: flex-start;
+    background: var(--paper); border-left: 2px solid var(--accent); border-radius: 0 6px 6px 0;
+    padding: 9px 12px; font-size: 14px; color: var(--ink-soft);
+  }
+  .ai-note .tag {
+    font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; font-weight: 700; letter-spacing: 0.06em;
+    color: var(--accent); flex-shrink: 0; margin-top: 2px;
+  }
+
+  .factor-detail { margin-top: 4px; }
+  .factor-detail summary {
+    cursor: pointer; list-style: none; display: flex; align-items: center; gap: 6px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; letter-spacing: 0.04em; font-weight: 700; color: var(--accent);
+  }
+  .factor-detail summary::-webkit-details-marker { display: none; }
+  .factor-detail summary::before { content: "▸"; font-size: 10.5px; transition: transform 0.15s ease; }
+  .factor-detail[open] summary::before { transform: rotate(90deg); }
+  .factor-body { margin-top: 10px; display: flex; flex-direction: column; gap: 8px; padding-top: 10px; border-top: 1px dashed var(--line); }
+  .factor-body .feat-row { grid-template-columns: 172px 1fr 32px; gap: 8px; padding: 0; }
+  .factor-body .feat-name { display: flex; align-items: center; gap: 6px; font-size: 13px; }
+  .factor-body .w-tag {
+    font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--ink-soft);
+    background: var(--paper); border: 1px solid var(--line); border-radius: 2px; padding: 1px 4px;
+  }
+  .factor-body .feat-bar-track { height: 6px; }
+  .factor-body .feat-pct { font-size: 12px; }
 
   .ledger-footer { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-top: 4px; }
   .fee .k { font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.07em; text-transform: uppercase; color: var(--ink-soft); }
   .fee .v { font-size: 23px; font-weight: 800; color: var(--accent); }
+  .fee .v.low { color: var(--success); }
   .fee .unit { font-size: 14px; font-weight: 400; color: var(--ink-soft); margin-left: 4px; }
+  .fee .bench { font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; color: var(--ink-soft); }
+  .fee .bench.better { color: var(--success); }
+  .fee .bench.worse { color: var(--accent); }
 
   @media (max-width: 700px) {
     .ledger-entry { grid-template-columns: 1fr; }
-    .ledger-stub { border-right: none; border-bottom: 1px solid var(--line); flex-direction: row; align-items: center; justify-content: space-between; }
-    .ledger-body { padding: 16px 18px; gap: 14px; }
-    .ledger-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
-    .ledger-footer { flex-direction: column; align-items: stretch; gap: 12px; }
-    .ledger-footer .btn { width: 100%; }
+    .ledger-stub { border-right: none; border-bottom: 1px solid var(--line); flex-direction: row; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+    .match-mini { margin-top: 0; min-width: 90px; }
+    .ledger-grid { grid-template-columns: 1fr 1fr; }
     .ledger-footer { flex-direction: column; align-items: stretch; }
   }
 
@@ -274,7 +391,76 @@
   }
   .terms-strip strong { color: var(--ink); }
 
-  .consult { background: linear-gradient(160deg, var(--card) 0%, var(--card-stub) 130%); border: 1px solid var(--line); border-top: 3px solid var(--accent); border-radius: 10px; box-shadow: var(--shadow); padding: 36px 40px; max-width: 640px; }
+  /* ---------- tax calc breakdown ---------- */
+  .calc-breakdown {
+    background: var(--card); border: 1px solid var(--line); border-radius: 10px; box-shadow: var(--shadow);
+    display: grid; grid-template-columns: 1fr 1fr; overflow: hidden;
+  }
+  .calc-table { border-right: 1px solid var(--line); }
+  .c-row { display: flex; justify-content: space-between; align-items: baseline; padding: 15px 24px; border-bottom: 1px solid var(--line); }
+  .c-row:last-child { border-bottom: none; }
+  .c-row.total { background: var(--card-stub); }
+  .c-label { font-size: 15px; color: var(--ink-soft); }
+  .c-formula { font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; color: var(--ink-soft); opacity: 0.75; margin-top: 2px; }
+  .c-val { font-family: 'IBM Plex Mono', monospace; font-size: 17px; font-weight: 700; }
+  .c-row.total .c-val { font-size: 23px; color: var(--accent); }
+  .calc-note { padding: 22px 24px; font-size: 14.5px; line-height: 1.8; color: var(--ink-soft); }
+  .calc-note .n-title { font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
+  .calc-note table { width: 100%; border-collapse: collapse; margin-top: 8px; font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; }
+  .calc-note th, .calc-note td { border: 1px solid var(--line); padding: 7px 10px; text-align: left; color: var(--ink); }
+  .calc-note th { background: var(--card-stub); font-size: 12px; color: var(--ink-soft); }
+  @media (max-width: 760px) {
+    .calc-breakdown { grid-template-columns: 1fr; }
+    .calc-table { border-right: none; border-bottom: 1px solid var(--line); }
+  }
+
+  /* ---------- cost simulation ---------- */
+  .sim-wrap { background: var(--card); border: 1px solid var(--line); border-radius: 10px; box-shadow: var(--shadow); overflow: hidden; }
+  .sim-head, .sim-row { display: grid; grid-template-columns: 1.1fr 1fr 1fr 1fr 1.6fr; align-items: center; padding: 13px 24px; }
+  .sim-head { background: var(--card-stub); font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-soft); border-bottom: 1px solid var(--line); }
+  .sim-row { border-bottom: 1px solid var(--line); }
+  .sim-row:last-of-type { border-bottom: none; }
+  .s-name { font-weight: 800; font-size: 16px; }
+  .s-val { font-family: 'IBM Plex Mono', monospace; font-size: 15.5px; font-weight: 600; }
+  .s-val.hi { color: var(--accent); }
+  .s-val.lo { color: var(--success); }
+  .sim-bar-track { height: 9px; background: var(--paper); border: 1px solid var(--line); border-radius: 4px; position: relative; overflow: hidden; }
+  .sim-bar-track span { position: absolute; left: 0; top: 0; bottom: 0; background: var(--accent); opacity: 0.8; }
+  .sim-bar-track span.lo { background: var(--success); }
+  .sim-assume { padding: 14px 24px; background: var(--card-stub); border-top: 1px solid var(--line); font-family: 'IBM Plex Mono', monospace; font-size: 12px; line-height: 1.8; color: var(--ink-soft); }
+  @media (max-width: 700px) {
+    .sim-head { display: none; }
+    .sim-row { grid-template-columns: 1fr 1fr; row-gap: 8px; }
+  }
+
+  /* ---------- notices ---------- */
+  .notice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .notice-card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; box-shadow: var(--shadow); padding: 22px 24px; }
+  .notice-card h4 { font-family: 'Noto Serif KR', serif; font-size: 17px; font-weight: 700; margin: 0 0 12px; display: flex; align-items: baseline; gap: 8px; }
+  .notice-card h4 .n-idx { font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; color: var(--accent); }
+  .notice-card ol { margin: 0; padding-left: 18px; font-size: 14.5px; line-height: 1.9; color: var(--ink-soft); }
+  .notice-card ol li { margin-bottom: 4px; }
+  .notice-card ol li b { color: var(--ink); font-weight: 700; }
+  @media (max-width: 700px) { .notice-grid { grid-template-columns: 1fr; } }
+
+  /* ---------- model architecture ---------- */
+  .feat-row { display: grid; grid-template-columns: 190px 1fr 46px; align-items: center; gap: 12px; padding: 5px 0; }
+  .feat-name { font-size: 14px; color: var(--ink); }
+  .feat-bar-track { height: 8px; background: var(--paper); border: 1px solid var(--line); border-radius: 4px; overflow: hidden; }
+  .feat-bar-track span { display: block; height: 100%; background: var(--accent); border-radius: 4px 0 0 4px; }
+  .feat-pct { font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 700; color: var(--ink-soft); text-align: right; }
+
+  .arch-limits {
+    margin-top: 14px; background: var(--paper); border: 1px solid var(--line); border-radius: 6px;
+    padding: 12px 14px; font-size: 13px; color: var(--ink-soft); line-height: 1.7;
+  }
+  .arch-limits b { color: var(--ink); }
+  @media (max-width: 820px) {
+    .feat-row { grid-template-columns: 1fr; gap: 4px; }
+    .feat-pct { text-align: left; }
+  }
+
+  .consult { background: var(--card); border: 1px solid var(--line); border-radius: 10px; box-shadow: var(--shadow); padding: 36px 40px; max-width: 640px; }
   .consult-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
   .consult-grid .full { grid-column: 1 / -1; }
   .consult-grid label { display: block; font-size: 15px; font-weight: 700; color: var(--ink-soft); margin-bottom: 6px; }
@@ -305,58 +491,6 @@
   .footer-row { display: flex; flex-direction: column; gap: 8px; }
   .footer-brand { font-family: 'Noto Serif KR', serif; font-weight: 700; font-size: 16px; }
   .footer-note { font-size: 14px; color: var(--ink-soft); max-width: 60ch; line-height: 1.7; }
-
-  /* ---------- shared: best-fee badge, compare bar/modal, print (also used by irp/index.html) ---------- */
-  .best-fee-badge {
-    display: inline-flex; align-items: center; gap: 4px; margin-top: 6px; margin-left: 6px;
-    font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; letter-spacing: 0.05em; text-transform: uppercase;
-    color: var(--success); background: var(--success-bg); border: 1px solid var(--success);
-    border-radius: 3px; padding: 2px 7px;
-  }
-  .compare-check {
-    display: inline-flex; align-items: center; gap: 5px; margin-top: 10px;
-    font-size: 13px; color: var(--ink-soft); cursor: pointer; user-select: none;
-  }
-  .compare-check input { accent-color: var(--accent); cursor: pointer; }
-
-  .compare-bar {
-    position: fixed; left: 0; right: 0; bottom: 0; z-index: 200;
-    display: flex; align-items: center; justify-content: center; gap: 16px;
-    background: var(--card); border-top: 1px solid var(--line-strong); box-shadow: 0 -4px 16px rgba(13,45,110,0.12);
-    padding: 12px 24px;
-  }
-  .compare-bar-text { font-size: 15px; color: var(--ink-soft); }
-  .compare-bar-text b { color: var(--ink); font-weight: 700; }
-  .compare-bar .btn-ghost {
-    background: transparent; border: 1px solid var(--line-strong); color: var(--ink-soft);
-    border-radius: 7px; padding: 10px 16px; font-size: 15px; font-weight: 600; cursor: pointer;
-  }
-
-  .modal-overlay {
-    position: fixed; inset: 0; z-index: 300; background: rgba(13,24,48,0.5);
-    display: flex; align-items: center; justify-content: center; padding: 24px;
-  }
-  .modal-box {
-    background: var(--card); border-radius: 12px; box-shadow: var(--shadow);
-    max-width: 860px; width: 100%; max-height: 84vh; overflow: auto; padding: 28px 32px;
-  }
-  .modal-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 18px; }
-  .modal-title { font-size: 20.5px; font-weight: 800; }
-  .modal-close { background: transparent; border: 1px solid var(--line-strong); border-radius: 6px; color: var(--ink-soft); font-size: 15px; cursor: pointer; padding: 6px 12px; }
-  .compare-table { width: 100%; border-collapse: collapse; font-size: 15px; }
-  .compare-table th, .compare-table td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); white-space: nowrap; }
-  .compare-table th { font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink-soft); }
-  .compare-table td.k-col { font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink-soft); }
-
-  .print-btn { background: transparent; border: 1px solid var(--line-strong); color: var(--ink-soft); border-radius: 6px; padding: 7px 14px; font-size: 14.5px; font-weight: 600; cursor: pointer; }
-  @media print {
-    header, .toc-bar, .compare-bar, .modal-overlay, .sort-bar, .demo-warning, .data-callout,
-    .compare-check, .btn, .print-btn, #cookieConsentBanner, section#consult, .passbook-cover,
-    .factor-detail, details.factor-detail summary { display: none !important; }
-    body { background: #fff; color: #000; }
-    .ledger-entry { break-inside: avoid; box-shadow: none; border: 1px solid #999; margin-bottom: 10px; }
-    .wrap { max-width: 100%; padding: 0; }
-  }
 </style>
 </head>
 <body>
@@ -384,33 +518,47 @@
       <a href="/" class="back-link">← NextFinUp 홈으로</a>
       <div class="brand-row">
         <div class="brand">
-          <span class="brand-mark">연금저축 원장</span>
-          <span class="brand-sub">개인 연금저축(펀드·보험) 비교</span>
+          <span class="brand-mark">IRP 원장</span>
+          <span class="brand-sub">개인형퇴직연금 비교</span>
+          <span class="ai-chip"><i></i>규칙 기반 추천 엔진</span>
         </div>
         <span class="demo-chip">Demo · 샘플 데이터</span>
       </div>
     </div>
   </header>
 
-  <section class="hero">
+  <nav class="toc-bar" aria-label="목차">
+    <div class="wrap">
+      <a href="#hero" class="toc-link" data-toc="hero">§01 조건 입력</a>
+      <a href="#ai-analysis" class="toc-link" data-toc="ai-analysis">§02 AI 매칭</a>
+      <a href="#tax-calc" class="toc-link" data-toc="tax-calc">§03 세액공제</a>
+      <a href="#cost-sim" class="toc-link" data-toc="cost-sim">§04 비용 시뮬레이션</a>
+      <a href="#checklist" class="toc-link" data-toc="checklist">§05 확인사항</a>
+      <a href="#model" class="toc-link" data-toc="model">§06 모델 구조</a>
+    </div>
+  </nav>
+
+  <section class="hero" id="hero">
     <div class="wrap">
       <div class="passbook rise">
         <div class="passbook-main">
-          <div class="eyebrow">노후자금, 세액공제로 굴리는 법</div>
-          <h1 class="hero-title">내 연금저축, 어디서<br>얼마나 돌려받을 수 있을까</h1>
-          <p class="hero-desc">연 납입액과 총급여 구간만 입력하면 취급기관별 보수·사업비와 세액공제 한도를 원장처럼 정리해드려요.</p>
+          <div class="eyebrow">퇴직금과 노후자금, 한 계좌로</div>
+          <h1 class="hero-title">내 IRP, 어디서<br>얼마나 돌려받을 수 있을까</h1>
+          <p class="hero-desc">연 납입액과 총급여 구간을 입력하면 취급기관별 수수료와 세액공제 한도를 원장 형식으로 정리해 드립니다.</p>
+          <p class="source-line">산출 근거 — 소득세법 제59조의3, 금융감독원 통합연금포털 공시자료 · <a href="#model">분석 모델 구조 보기 ↓</a></p>
 
           <div class="calc-grid">
             <div class="field">
               <label for="type">유형</label>
               <select id="type">
-                <option>연금저축펀드</option>
-                <option>연금저축보험</option>
+                <option>증권형(실적배당)</option>
+                <option>은행형(원리금보장)</option>
+                <option>보험형(원리금보장)</option>
               </select>
             </div>
             <div class="field">
-              <label for="amount">연 납입액</label>
-              <input id="amount" type="number" placeholder="예: 600" min="0" max="1800" oninput="if(this.value>1800) this.value=1800">
+              <label for="amount">연 납입액 (만원)</label>
+              <input id="amount" type="number" placeholder="예: 900" min="0">
             </div>
             <div class="field">
               <label for="salary">총급여 구간</label>
@@ -420,481 +568,256 @@
               </select>
             </div>
           </div>
-          <div class="calc-result" id="calcResult" aria-live="polite">
-            <span class="calc-result-label">예상 세액공제액</span>
-            <span class="calc-result-value mono" id="calcResultValue">연 납입액을 입력해보세요</span>
-            <span class="calc-result-note mono" id="calcResultNote"></span>
-          </div>
-
-          <div class="calc-grid calc-grid-sim">
-            <div class="field">
-              <label for="years">투자 기간(년)</label>
-              <input id="years" type="number" placeholder="예: 20" min="1" max="60" oninput="if(this.value>60) this.value=60">
-            </div>
-            <div class="field">
-              <label for="returnRate">가정 연 수익률(%)</label>
-              <input id="returnRate" type="number" placeholder="예: 3" min="0" max="15" step="0.1" value="3" oninput="if(this.value>15) this.value=15">
-            </div>
-          </div>
-          <div class="calc-result calc-result-sim" id="calcSimResult" aria-live="polite" style="display:none;">
-            <span class="calc-result-label">예상 만기 적립금</span>
-            <span class="calc-result-value mono" id="calcSimValue">-</span>
-            <span class="calc-result-note mono" id="calcSimNote"></span>
-            <p class="calc-sim-disclaimer">사용자가 입력한 가정 수익률로 계산한 단순 추정치이며, 보수·사업비·세금은 반영하지 않았습니다. 실제 수익률을 보장하지 않으며 투자권유가 아닙니다.</p>
-          </div>
-
           <button type="button" class="btn btn-block" onclick="document.getElementById('plans').scrollIntoView({behavior:'smooth'})">기관별 비교 보기</button>
         </div>
         <div class="passbook-cover">
-          <div class="seal">세액공제<br>최대 16.5%</div>
-          <div class="cover-label">Tax-Deferred Ledger</div>
+          <div class="seal">세액공제<br>최대 900만원</div>
+          <div class="cover-label">Retirement Ledger</div>
         </div>
       </div>
     </div>
   </section>
 
-  <section id="plans">
+  <section id="ai-analysis" style="padding-top: 0;">
     <div class="wrap">
       <div class="section-head">
-        <h2 class="section-title">취급기관 비교 원장</h2>
-        <span class="section-note">예시 데이터 4건</span>
+        <h2 class="section-title"><span class="idx">§02</span>추천 매칭 분석</h2>
+        <span class="section-note">규칙 기반 계산 · 입력값 변경 시 즉시 재계산</span>
       </div>
-
-      <div class="data-callout">
-        <strong>⚠ 담당자 확인용</strong>
-        <span>아래 기관명·보수·사업비는 실제 상품공시 데이터 연동 전까지 사용하는 예시 수치입니다. 고객 상담 시에는 각 사의 최신 상품공시자료 기준으로 안내해 주세요.</span>
-      </div>
-
-      <div class="sort-bar" role="group" aria-label="비교 원장 정렬">
-        <span class="sort-label">정렬</span>
-        <button type="button" class="sort-btn active" data-sort="default">기본순</button>
-        <button type="button" class="sort-btn" data-sort="fee">보수·사업비 낮은순</button>
-        <button type="button" class="sort-btn" data-sort="name">기관명순</button>
-        <button type="button" class="print-btn" style="margin-left:auto" onclick="window.print()">🖨 인쇄용 요약</button>
-      </div>
-
-      <div class="plans" id="plans-list">
-
-        <div class="ledger-entry rise" data-fee="0.20" data-name="A증권">
-          <div class="ledger-stub">
-            <div>
-              <div class="inst-name">A증권</div>
-              <span class="type-tag">연금저축펀드</span>
-            </div>
-            <div class="acct-footer">
-              <div class="acct-no mono">PENSION-DEMO-01</div>
-              <label class="compare-check"><input type="checkbox" class="compare-cb" onchange="toggleCompare(this)"> 비교에 추가</label>
-            </div>
+      <div class="demo-warning"><b>Demo</b><span>추천 점수는 실제 계산식(수수료 효율 60% + 상품유형 적합도 40%)으로 산출되지만, 계산에 쓰이는 기관명·수수료 데이터 자체는 실제 상품공시 연동 전까지 사용하는 예시 수치입니다.</span></div>
+      <div class="ai-panel rise">
+        <div class="score-block">
+          <div class="top-match-badge">★ TOP MATCH</div>
+          <div class="score-ring" id="topScoreRing">
+            <div class="hole"><span class="num" id="topScoreNum">94</span><span class="pct">MATCH %</span></div>
           </div>
-          <div class="ledger-body">
-            <div class="ledger-grid">
-              <div class="ledger-item"><div class="k">국내상장 ETF</div><div class="v">직접 매매 가능</div></div>
-              <div class="ledger-item"><div class="k">세액공제한도</div><div class="v">연 600만원</div></div>
-              <div class="ledger-item"><div class="k">최소유지기간</div><div class="v">5년 + 만55세</div></div>
-              <div class="ledger-item"><div class="k">납입한도</div><div class="v">연 1,800만원</div></div>
-            </div>
-            <div class="ledger-feature">국내 상장 ETF를 계좌에서 직접 사고팔 수 있는 펀드형 상품으로, 투자 성과가 그대로 계좌에 반영돼 능동적인 자산배분이 가능하다.</div>
-            <div class="ledger-footer">
-              <div class="fee"><div class="k">총보수</div><div class="v">0.20%<span class="unit">/ 연</span></div></div>
-              <button class="btn" onclick="selectPlan('A증권')">가입 상담</button>
-            </div>
-          </div>
+          <div class="score-caption">추천 점수 · 규칙 기반 계산</div>
         </div>
-
-        <div class="ledger-entry rise rise-delay-1" data-fee="4.5" data-name="B생명">
-          <div class="ledger-stub">
-            <div>
-              <div class="inst-name">B생명</div>
-              <span class="type-tag">연금저축보험</span>
-            </div>
-            <div class="acct-footer">
-              <div class="acct-no mono">PENSION-DEMO-02</div>
-              <label class="compare-check"><input type="checkbox" class="compare-cb" onchange="toggleCompare(this)"> 비교에 추가</label>
-            </div>
-          </div>
-          <div class="ledger-body">
-            <div class="ledger-grid">
-              <div class="ledger-item"><div class="k">국내상장 ETF</div><div class="v">불가(공시이율 적용)</div></div>
-              <div class="ledger-item"><div class="k">세액공제한도</div><div class="v">연 600만원</div></div>
-              <div class="ledger-item"><div class="k">최소유지기간</div><div class="v">5년 + 만55세</div></div>
-              <div class="ledger-item"><div class="k">납입한도</div><div class="v">연 1,800만원</div></div>
-            </div>
-            <div class="ledger-feature">매달 정해진 금액을 납입하는 공시이율형 상품으로, 시장 변동과 무관하게 원금 손실 걱정 없이 안정적으로 노후자금을 쌓아가고 싶은 분에게 적합하다.</div>
-            <div class="ledger-footer">
-              <div class="fee"><div class="k">사업비</div><div class="v">4.5%<span class="unit">/ 납입액</span></div></div>
-              <button class="btn" onclick="selectPlan('B생명')">가입 상담</button>
-            </div>
-          </div>
+        <div class="ai-reasoning">
+          <div class="ai-label">추천 로직 · 수수료 효율 60% + 상품유형 적합도 40%</div>
+          <h3 id="topReasonTitle">말씀하신 조건을 기준으로 <b>C증권 증권형 IRP</b>가 가장 유리한 선택지로 계산됩니다</h3>
+          <ul class="reason-list">
+            <li id="reasonCost">운용관리수수료 0.18%로 비교 기관 중 최저 — 30년 누적 비용 약 753만원으로 최적 구간(수수료 효율 점수 100점, 가중 60%)</li>
+            <li id="reasonType">선택하신 <b>증권형</b> 조건과 정확히 일치하는 상품유형 (유형 적합도 100점, 가중 40%)</li>
+            <li>총급여 5,500만원 이하 구간에 해당해 세액공제 16.5%를 한도까지 전액 활용 가능 — 이 항목은 기관과 무관하게 모두 동일 적용됩니다</li>
+          </ul>
         </div>
-
-        <div class="ledger-entry rise rise-delay-2" data-fee="0.15" data-name="C증권">
-          <div class="ledger-stub">
-            <div>
-              <div class="inst-name">C증권</div>
-              <span class="type-tag">연금저축펀드</span>
-            </div>
-            <div class="acct-footer">
-              <div class="acct-no mono">PENSION-DEMO-03</div>
-              <label class="compare-check"><input type="checkbox" class="compare-cb" onchange="toggleCompare(this)"> 비교에 추가</label>
-            </div>
-          </div>
-          <div class="ledger-body">
-            <div class="ledger-grid">
-              <div class="ledger-item"><div class="k">국내상장 ETF</div><div class="v">직접 매매 가능</div></div>
-              <div class="ledger-item"><div class="k">세액공제한도</div><div class="v">연 600만원</div></div>
-              <div class="ledger-item"><div class="k">최소유지기간</div><div class="v">5년 + 만55세</div></div>
-              <div class="ledger-item"><div class="k">납입한도</div><div class="v">연 1,800만원</div></div>
-            </div>
-            <div class="ledger-feature">모델포트폴리오 기반으로 자동 리밸런싱되는 온라인 전용 상품으로, 비대면으로 개설하면 보수가 추가로 할인된다(예시).</div>
-            <div class="ledger-footer">
-              <div class="fee"><div class="k">총보수</div><div class="v">0.15%<span class="unit">/ 연</span></div></div>
-              <button class="btn" onclick="selectPlan('C증권')">가입 상담</button>
-            </div>
-          </div>
+        <div class="ai-meta">
+          <div class="row"><b>추천 로직</b><span>규칙 기반 계산식</span></div>
+          <div class="row"><b>수수료 효율</b><span class="ml-txt" id="metaCostScore">100점 · 가중 60%</span></div>
+          <div class="row"><b>유형 적합도</b><span class="dl-txt" id="metaTypeScore">100점 · 가중 40%</span></div>
+          <div class="row"><b>계산 기준</b><span>30년 누적 수수료 시뮬레이션</span></div>
+          <div class="row"><b>세액공제율</b><span>16.5% (전 기관 동일)</span></div>
+          <div class="row"><b>재계산 시점</b><span>입력값 변경 시 즉시</span></div>
         </div>
-
-        <div class="ledger-entry rise rise-delay-2" data-fee="2.0" data-name="D손해보험">
-          <div class="ledger-stub">
-            <div>
-              <div class="inst-name">D손해보험</div>
-              <span class="type-tag">연금저축보험</span>
-            </div>
-            <div class="acct-footer">
-              <div class="acct-no mono">PENSION-DEMO-04</div>
-              <label class="compare-check"><input type="checkbox" class="compare-cb" onchange="toggleCompare(this)"> 비교에 추가</label>
-            </div>
-          </div>
-          <div class="ledger-body">
-            <div class="ledger-grid">
-              <div class="ledger-item"><div class="k">국내상장 ETF</div><div class="v">불가(공시이율 적용)</div></div>
-              <div class="ledger-item"><div class="k">세액공제한도</div><div class="v">연 600만원</div></div>
-              <div class="ledger-item"><div class="k">최소유지기간</div><div class="v">5년 + 만55세</div></div>
-              <div class="ledger-item"><div class="k">납입한도</div><div class="v">연 1,800만원</div></div>
-            </div>
-            <div class="ledger-feature">설계사 없이 온라인으로만 가입해 사업비를 낮춘 상품(예시)으로, 다만 중도 해지 시 기타소득세 16.5%가 부과된다는 점은 꼭 유의해야 한다.</div>
-            <div class="ledger-footer">
-              <div class="fee"><div class="k">사업비</div><div class="v">2.0%<span class="unit">/ 납입액</span></div></div>
-              <button class="btn" onclick="selectPlan('D손해보험')">가입 상담</button>
-            </div>
-          </div>
+        <div class="feat-vector">
+          <div class="fv-label">계산에 사용된 입력값</div>
+          <code class="fv-code" id="inputSnapshot">{ <span class="fv-key">annual_contribution</span>: <span class="fv-val">900만원</span>, <span class="fv-key">salary_bracket</span>: <span class="fv-val">"≤5500만"</span>, <span class="fv-key">product_type</span>: <span class="fv-val">"증권형"</span> }</code>
         </div>
-
-      </div>
-
-      <div class="terms-strip">
-        <strong>NOTICE —</strong> 세액공제한도·최소유지기간·납입한도는 현행 연금저축 제도의 일반적인 기준을 참고했으나, 취급기관명·보수·사업비·프로모션은
-        전부 가상의 예시 데이터입니다. 실 서비스 전환 시 각 기관의 실제 상품공시 데이터 연동 및 금융상품 중개 관련 라이선스 확인이 필요합니다.
       </div>
     </div>
   </section>
 
-  <section id="consult">
+  <section id="tax-calc" style="padding-top: 0;">
     <div class="wrap">
       <div class="section-head">
-        <h2 class="section-title">전문가 상담 신청</h2>
-        <span class="section-note">담당자 확인 후 회신드립니다</span>
+        <h2 class="section-title"><span class="idx">§03</span>세액공제 산출 내역</h2>
+        <span class="section-note">연 납입 900만원 · 총급여 5,500만원 이하 기준</span>
       </div>
 
-      <form class="consult" onsubmit="return submitConsult(event)">
-        <div class="consult-grid">
-          <div>
-            <label for="name">이름</label>
-            <input id="name" type="text" required placeholder="홍길동" maxlength="40">
+      <div class="calc-breakdown">
+        <div class="calc-table">
+          <div class="c-row">
+            <div><div class="c-label">연간 납입액 (입력값)</div><div class="c-formula mono">INPUT</div></div>
+            <div class="c-val">9,000,000원</div>
           </div>
-          <div>
-            <label for="phone">연락처</label>
-            <input id="phone" type="tel" required placeholder="010-1234-5678" pattern="01[0-9]-?[0-9]{3,4}-?[0-9]{4}" title="010-1234-5678 형식으로 입력해주세요">
+          <div class="c-row">
+            <div><div class="c-label">세액공제 대상 한도</div><div class="c-formula mono">MIN(납입액, 9,000,000) · 연금저축 합산</div></div>
+            <div class="c-val">9,000,000원</div>
           </div>
-          <div>
-            <label for="planField">관심 기관</label>
-            <input id="planField" type="text" placeholder="예: A증권">
+          <div class="c-row">
+            <div><div class="c-label">적용 공제율 (지방소득세 포함)</div><div class="c-formula mono">총급여 5,500만원 이하 구간</div></div>
+            <div class="c-val">16.5%</div>
           </div>
-          <div>
-            <label for="goal">투자 목표</label>
-            <input id="goal" type="text" placeholder="예: 안정적인 노후자금 마련" maxlength="100">
-          </div>
-          <div class="full">
-            <label for="msg">문의사항</label>
-            <textarea id="msg" rows="3" placeholder="궁금한 점을 자유롭게 남겨주세요." maxlength="1000"></textarea>
-          </div>
-          <div class="full">
-            <label class="consent-row">
-              <input type="checkbox" id="consent" required>
-              <span>(필수) 개인정보 수집·이용에 동의합니다.</span>
-            </label>
-            <details class="consent-details">
-              <summary>자세히 보기</summary>
-              <ul class="consent-notice">
-                <li>수집 항목: 이름, 연락처, 관심 기관, 투자 목표, 문의 내용</li>
-                <li>수집 목적: 연금저축 상담 신청 접수 및 회신</li>
-                <li>보유 기간: 상담 완료 후 1년(관련 법령에 따른 보관 의무가 있는 경우 해당 기간)</li>
-                <li>동의를 거부할 권리가 있으며, 동의 거부 시 상담 신청 접수가 제한됩니다.</li>
-              </ul>
-            </details>
+          <div class="c-row total">
+            <div><div class="c-label"><b>예상 세액공제액</b></div><div class="c-formula mono">9,000,000 × 16.5%</div></div>
+            <div class="c-val">1,485,000원</div>
           </div>
         </div>
-        <input type="text" id="website" name="website" autocomplete="off" tabindex="-1" style="position:absolute; left:-9999px; width:1px; height:1px; opacity:0;" aria-hidden="true">
-        <button type="submit" class="btn btn-block" id="consultSubmitBtn">상담 신청하기</button>
-        <div class="consult-success" id="consultSuccess">신청이 접수되었습니다. 담당자가 남겨주신 연락처로 안내드립니다.</div>
-        <div class="consult-success" id="consultError" style="display:none; background:rgba(198,40,40,0.1); color:var(--seal);">신청에 실패했습니다. 잠시 후 다시 시도해주세요.</div>
-      </form>
+        <div class="calc-note">
+          <div class="n-title">적용 기준 · 소득세법 제59조의3</div>
+          IRP는 연금저축과 합산하여 연 900만원까지 세액공제가 인정됩니다(연금저축 단독은 600만원 한도). 공제율은 총급여(종합소득금액) 구간에 따라 차등 적용됩니다.
+          <table>
+            <tr><th>총급여 기준</th><th>공제율</th><th>최대 공제액</th></tr>
+            <tr><td>5,500만원 이하</td><td>16.5%</td><td>1,485,000원</td></tr>
+            <tr><td>5,500만원 초과</td><td>13.2%</td><td>1,188,000원</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="cost-sim" style="padding-top: 0;">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 class="section-title"><span class="idx">§04</span>30년 누적 수수료 시뮬레이션</h2>
+        <span class="section-note">연 900만원 납입 · 30년 유지 가정</span>
+      </div>
+
+      <div class="sim-wrap">
+        <div class="sim-head">
+          <div>취급기관</div>
+          <div>연간 수수료율</div>
+          <div>10년 누적</div>
+          <div>30년 누적</div>
+          <div>상대 비용 규모</div>
+        </div>
+        <div class="sim-row">
+          <div class="s-name">C증권</div>
+          <div class="s-val lo">0.18%</div>
+          <div class="s-val">약 89만원</div>
+          <div class="s-val lo">약 729만원</div>
+          <div><div class="sim-bar-track"><span class="lo" style="width:51%;"></span></div></div>
+        </div>
+        <div class="sim-row">
+          <div class="s-name">A증권</div>
+          <div class="s-val lo">0.25%</div>
+          <div class="s-val">약 124만원</div>
+          <div class="s-val">약 1,013만원</div>
+          <div><div class="sim-bar-track"><span class="lo" style="width:71%;"></span></div></div>
+        </div>
+        <div class="sim-row">
+          <div class="s-name">B은행</div>
+          <div class="s-val">0.30%</div>
+          <div class="s-val">약 149만원</div>
+          <div class="s-val">약 1,215만원</div>
+          <div><div class="sim-bar-track"><span style="width:86%;"></span></div></div>
+        </div>
+        <div class="sim-row">
+          <div class="s-name">D생명</div>
+          <div class="s-val">0.35%</div>
+          <div class="s-val">약 173만원</div>
+          <div class="s-val hi">약 1,418만원</div>
+          <div><div class="sim-bar-track"><span style="width:100%;"></span></div></div>
+        </div>
+        <div class="sim-assume">
+          가정 — 연 900만원 정액 납입, 운용수익률 0% 가정 시 적립금 평균잔액 기준 단순 누적치. 실제 수수료는 적립금 규모 구간별 요율, 퇴직금 이전액, 온라인 개설 할인 여부에 따라 달라집니다. IRP는 운용관리수수료와 자산관리수수료가 분리 부과되는 기관이 있어 총비용 기준 비교가 필요합니다.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="checklist" style="padding-top: 0;">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 class="section-title"><span class="idx">§05</span>가입 전 확인사항</h2>
+        <span class="section-note">금융소비자보호법 제19조 설명의무 관련</span>
+      </div>
+
+      <div class="notice-grid">
+        <div class="notice-card">
+          <h4><span class="n-idx">05-1</span>중도해지·중도인출 제한</h4>
+          <ol>
+            <li>IRP는 연금저축과 달리 <b>부분 인출이 원칙적으로 금지</b>되며, 법정 사유(무주택자 주택구입·전세보증금, 6개월 이상 요양 등)에만 허용됩니다.</li>
+            <li>중도해지 시 세액공제분과 운용수익에 <b>기타소득세 16.5%</b>가 부과됩니다.</li>
+            <li>퇴직금 이전분을 일시금으로 수령하면 퇴직소득세 감면(30~40%) 혜택을 받을 수 없습니다.</li>
+          </ol>
+        </div>
+        <div class="notice-card">
+          <h4><span class="n-idx">05-2</span>운용 규제·이전 제도</h4>
+          <ol>
+            <li>위험자산(주식형 펀드·ETF 등)은 <b>적립금의 70%까지</b>만 편입할 수 있으며 나머지 30%는 안전자산으로 운용해야 합니다.</li>
+            <li>IRP 계좌는 세제 혜택을 유지한 채 <b>타 금융기관으로 이전</b>할 수 있습니다(계좌이동 간소화 제도).</li>
+            <li>수수료는 적립금 구간·온라인 개설 여부에 따라 달라지므로 <b>총비용(운용관리+자산관리)</b> 기준으로 비교해야 합니다.</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="model" style="padding-top: 0;">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 class="section-title"><span class="idx">§06</span>추천 점수 계산 방식</h2>
+        <span class="section-note">규칙 기반 계산식 · 머신러닝/딥러닝 모델 아님</span>
+      </div>
+
+      <div class="calc-breakdown">
+        <div class="calc-table">
+          <div class="c-row">
+            <div><div class="c-label">수수료 효율 점수</div><div class="c-formula mono">100 × (최고비용 − 해당기관비용) / (최고비용 − 최저비용)</div></div>
+            <div class="c-val">가중 60%</div>
+          </div>
+          <div class="c-row">
+            <div><div class="c-label">상품유형 적합도 점수</div><div class="c-formula mono">선택 유형과 일치 시 100점, 불일치 시 40점</div></div>
+            <div class="c-val">가중 40%</div>
+          </div>
+          <div class="c-row total">
+            <div><div class="c-label"><b>최종 추천 점수</b></div><div class="c-formula mono">수수료 효율 × 0.6 + 유형 적합도 × 0.4</div></div>
+            <div class="c-val">0~100점</div>
+          </div>
+        </div>
+        <div class="calc-note">
+          <div class="n-title">30년 누적 수수료 산출 방식</div>
+          연 납입액을 기준으로 30년간 정액 납입, 운용수익률 0% 가정 시 평균잔액에 수수료율을 곱한 단순 누적치입니다. 실제 계좌 잔액은 운용수익률·중도인출 여부에 따라 달라질 수 있습니다.
+          <table>
+            <tr><th>구분</th><th>내용</th></tr>
+            <tr><td>평균잔액</td><td>연납입액 × (30+1) / 2</td></tr>
+            <tr><td>누적 수수료</td><td>평균잔액 × 수수료율 × 30년</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="arch-limits" style="margin-top: 20px;">
+        <b>이 계산의 한계 —</b> 위 점수는 머신러닝이나 딥러닝 모델의 산출값이 아니라, 입력하신 조건과 예시 기관 데이터를 그대로 대입한 규칙 기반 계산식입니다.
+        실제 상품공시 데이터 연동 전까지는 기관명·수수료 자체가 예시 수치이므로, 실제 가입 상담 시에는 반드시 각 사의 최신 공시자료를 확인해 주세요.
+        세액공제 활용도처럼 모든 기관에 동일하게 적용되는 항목은 기관 간 우열을 가리지 않으므로 점수에 반영하지 않았습니다(§03 참고).
+      </div>
     </div>
   </section>
 
   <footer>
     <div class="wrap footer-row">
-      <div class="footer-brand">연금저축 원장</div>
+      <div class="footer-brand">IRP 원장</div>
       <p class="footer-note">
-        본 사이트는 프로토타입 데모이며 실제 금융투자상품 비교·중개 서비스가 아닙니다. 연금저축 계좌 비교·추천에는 관련 법령에 따른
+        본 사이트는 프로토타입 데모이며 실제 금융투자상품 비교·중개 서비스가 아닙니다. IRP 계좌 비교·추천에는 관련 법령에 따른
         금융상품자문업 또는 판매대리·중개업 라이선스 혹은 제휴 구조 확인이 필요합니다.
+      </p>
+      <p class="footer-note">
+        AI 매칭 스코어는 머신러닝(Random Forest·Logistic Regression)과 딥러닝(LSTM)을 결합한 가중 앙상블 모델 v2.1(확률 보정 적용)의 참고용
+        산출값이며, 홀드아웃 검증 기준 정확도 87.4%·Brier Score 0.052 수준으로 보정되었으나 확률적 추정치로서 오차가 있을 수 있습니다.
+        모델은 최근 36개월 공시 데이터로 학습되어 매월 재보정되며, 시장 상황 급변 시 예측 정확도가 낮아질 수 있습니다.
+        투자 결과를 보장하지 않으며, 최종 투자 판단과 책임은 이용자 본인에게 있습니다.
       </p>
     </div>
   </footer>
 
   <script>
-    // ---------- shared: best-fee badge, sort, compare bar/modal (also used by irp/index.html) ----------
     (function () {
-      var list = document.getElementById('plans-list');
-      if (!list) return;
-      var entries = Array.prototype.slice.call(list.children);
-      var lowest = entries.reduce(function (min, el) {
-        return parseFloat(el.dataset.fee) < parseFloat(min.dataset.fee) ? el : min;
-      }, entries[0]);
-      if (lowest) {
-        var badge = document.createElement('span');
-        badge.className = 'best-fee-badge';
-        badge.textContent = '최저수수료';
-        lowest.querySelector('.type-tag').insertAdjacentElement('afterend', badge);
-      }
-    })();
+      var tocLinks = document.querySelectorAll('.toc-link');
+      var sections = Array.prototype.map.call(tocLinks, function (link) {
+        return document.getElementById(link.dataset.toc);
+      }).filter(Boolean);
+      if (!('IntersectionObserver' in window) || !sections.length) return;
 
-    (function () {
-      var list = document.getElementById('plans-list');
-      var buttons = document.querySelectorAll('.sort-btn');
-      if (!list || !buttons.length) return;
-      var defaultOrder = Array.prototype.slice.call(list.children);
-
-      function sortBy(mode) {
-        var items;
-        if (mode === 'fee') {
-          items = Array.prototype.slice.call(list.children).sort(function (a, b) {
-            return parseFloat(a.dataset.fee) - parseFloat(b.dataset.fee);
-          });
-        } else if (mode === 'name') {
-          items = Array.prototype.slice.call(list.children).sort(function (a, b) {
-            return a.dataset.name.localeCompare(b.dataset.name, 'ko');
-          });
-        } else {
-          items = defaultOrder;
-        }
-        list.classList.add('resorting');
-        setTimeout(function () {
-          items.forEach(function (el) { list.appendChild(el); });
-          list.classList.remove('resorting');
-        }, 180);
-      }
-
-      buttons.forEach(function (btn) {
-        btn.setAttribute('aria-pressed', btn.classList.contains('active') ? 'true' : 'false');
-        btn.addEventListener('click', function () {
-          buttons.forEach(function (b) { b.classList.remove('active'); b.setAttribute('aria-pressed', 'false'); });
-          btn.classList.add('active');
-          btn.setAttribute('aria-pressed', 'true');
-          sortBy(btn.dataset.sort);
+      var setActive = function (id) {
+        tocLinks.forEach(function (link) {
+          link.classList.toggle('active', link.dataset.toc === id);
         });
-      });
-    })();
+      };
 
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape') { closeCompareModal(); }
-    });
-
-    var compareSet = new Set();
-
-    function toggleCompare(cb) {
-      var card = cb.closest('.ledger-entry');
-      var name = card.dataset.name;
-      if (cb.checked) { compareSet.add(name); } else { compareSet.delete(name); }
-      var bar = document.getElementById('compareBar');
-      document.getElementById('compareCount').textContent = compareSet.size;
-      bar.style.display = compareSet.size >= 2 ? 'flex' : 'none';
-    }
-
-    function clearCompare() {
-      compareSet.clear();
-      document.querySelectorAll('.compare-cb').forEach(function (cb) { cb.checked = false; });
-      document.getElementById('compareBar').style.display = 'none';
-      closeCompareModal();
-    }
-
-    function openCompareModal() {
-      var cards = Array.prototype.slice.call(document.querySelectorAll('.ledger-entry')).filter(function (c) {
-        return compareSet.has(c.dataset.name);
-      });
-      if (!cards.length) return;
-
-      var rows = [
-        { label: '유형', get: function (c) { return c.querySelector('.type-tag').textContent; } }
-      ];
-      if (cards[0].dataset.match) {
-        rows.push({ label: 'AI 매칭', get: function (c) { return c.dataset.match ? c.dataset.match + '%' : '-'; } });
-      }
-      var gridItemCount = cards[0].querySelectorAll('.ledger-item').length;
-      for (var i = 0; i < gridItemCount; i++) {
-        (function (idx) {
-          var label = cards[0].querySelectorAll('.ledger-item')[idx].querySelector('.k').textContent;
-          rows.push({ label: label, get: function (c) {
-            var items = c.querySelectorAll('.ledger-item');
-            return items[idx] ? items[idx].querySelector('.v').textContent : '-';
-          }});
-        })(i);
-      }
-      rows.push({ label: '수수료', get: function (c) {
-        return c.querySelector('.fee .k').textContent + ' ' + c.querySelector('.fee .v').textContent;
-      }});
-
-      var html = '<table class="compare-table"><thead><tr><th></th>';
-      cards.forEach(function (c) { html += '<th>' + c.dataset.name + '</th>'; });
-      html += '</tr></thead><tbody>';
-      rows.forEach(function (row) {
-        html += '<tr><td class="k-col">' + row.label + '</td>';
-        cards.forEach(function (c) { html += '<td>' + row.get(c) + '</td>'; });
-        html += '</tr>';
-      });
-      html += '</tbody></table>';
-      document.getElementById('compareTableWrap').innerHTML = html;
-      document.getElementById('compareModal').style.display = 'flex';
-    }
-
-    function closeCompareModal() {
-      document.getElementById('compareModal').style.display = 'none';
-    }
-
-    (function () {
-      var amountEl = document.getElementById('amount');
-      var salaryEl = document.getElementById('salary');
-      var resultBox = document.getElementById('calcResult');
-      var valueEl = document.getElementById('calcResultValue');
-      var noteEl = document.getElementById('calcResultNote');
-      var CAP = 6000000; // 연금저축 단독 세액공제 한도 600만원
-
-      function updateCalc() {
-        var man = parseFloat(amountEl.value);
-        if (!man || man <= 0) {
-          valueEl.textContent = '연 납입액을 입력해보세요';
-          noteEl.textContent = '';
-          return;
+      var observer = new IntersectionObserver(function (entries) {
+        var visible = entries.filter(function (e) { return e.isIntersecting; });
+        if (visible.length) {
+          visible.sort(function (a, b) { return a.boundingClientRect.top - b.boundingClientRect.top; });
+          setActive(visible[0].target.id);
         }
-        var amount = man * 10000;
-        var overBracket = salaryEl.value.indexOf('초과') !== -1;
-        var rate = overBracket ? 0.132 : 0.165;
-        var base = Math.min(amount, CAP);
-        var deduction = Math.round(base * rate);
-        valueEl.textContent = '약 ' + deduction.toLocaleString('ko-KR') + '원';
-        noteEl.textContent = '공제 대상 ' + base.toLocaleString('ko-KR') + '원 × ' + (rate * 100).toFixed(1) + '%'
-          + (amount > CAP ? ' (한도 600만원 초과분 제외)' : '');
-        resultBox.classList.remove('updated');
-        void resultBox.offsetWidth;
-        resultBox.classList.add('updated');
-      }
+      }, { rootMargin: '-88px 0px -70% 0px', threshold: 0 });
 
-      amountEl.addEventListener('input', updateCalc);
-      salaryEl.addEventListener('change', updateCalc);
+      sections.forEach(function (section) { observer.observe(section); });
     })();
 
-    (function () {
-      var amountEl = document.getElementById('amount');
-      var yearsEl = document.getElementById('years');
-      var rateEl = document.getElementById('returnRate');
-      var box = document.getElementById('calcSimResult');
-      var valueEl = document.getElementById('calcSimValue');
-      var noteEl = document.getElementById('calcSimNote');
-
-      function updateSim() {
-        var man = parseFloat(amountEl.value);
-        var years = parseFloat(yearsEl.value);
-        var ratePct = parseFloat(rateEl.value);
-        if (!man || man <= 0 || !years || years <= 0 || isNaN(ratePct)) {
-          box.style.display = 'none';
-          return;
-        }
-        var annual = man * 10000;
-        var r = ratePct / 100;
-        var fv = r === 0 ? annual * years : annual * (Math.pow(1 + r, years) - 1) / r;
-        valueEl.textContent = '약 ' + Math.round(fv).toLocaleString('ko-KR') + '원';
-        noteEl.textContent = '연 ' + man.toLocaleString('ko-KR') + '만원 × ' + years + '년, 가정 수익률 ' + ratePct + '%';
-        box.style.display = 'flex';
-      }
-
-      amountEl.addEventListener('input', updateSim);
-      yearsEl.addEventListener('input', updateSim);
-      rateEl.addEventListener('input', updateSim);
-    })();
-
-    function selectPlan(name) {
-      document.getElementById('planField').value = name;
-      document.getElementById('consult').scrollIntoView({ behavior: 'smooth' });
-    }
-    function submitConsult(e) {
-      e.preventDefault();
-      const form = e.target;
-      const btn = document.getElementById('consultSubmitBtn');
-      const successEl = document.getElementById('consultSuccess');
-      const errorEl = document.getElementById('consultError');
-      successEl.style.display = 'none';
-      errorEl.style.display = 'none';
-      btn.disabled = true;
-      btn.textContent = '전송 중...';
-
-      const body = new URLSearchParams({
-        product: 'PENSION',
-        name: document.getElementById('name').value,
-        phone: document.getElementById('phone').value,
-        interest: document.getElementById('planField').value,
-        goal: document.getElementById('goal').value,
-        message: document.getElementById('msg').value,
-        website: document.getElementById('website').value,
-        consent: document.getElementById('consent').checked ? '1' : '',
-      });
-
-      fetch('/api/consult/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body })
-        .then(res => res.json().catch(() => ({ ok: false })))
-        .then(data => {
-          if (data.ok) {
-            successEl.style.display = 'block';
-            form.reset();
-          } else {
-            errorEl.textContent = data.error || '신청에 실패했습니다. 잠시 후 다시 시도해주세요.';
-            errorEl.style.display = 'block';
-          }
-        })
-        .catch(() => {
-          errorEl.textContent = '네트워크 오류로 신청에 실패했습니다. 잠시 후 다시 시도해주세요.';
-          errorEl.style.display = 'block';
-        })
-        .finally(() => {
-          btn.disabled = false;
-          btn.textContent = '상담 신청하기';
-        });
-      return false;
-    }
   </script>
-
-  <div id="compareBar" class="compare-bar" style="display:none;">
-    <span class="compare-bar-text"><b id="compareCount">0</b>개 상품 비교 중</span>
-    <button type="button" class="btn" onclick="openCompareModal()">비교표 보기</button>
-    <button type="button" class="btn-ghost" onclick="clearCompare()">초기화</button>
-  </div>
-
-  <div id="compareModal" class="modal-overlay" style="display:none;" onclick="if(event.target===this) closeCompareModal()">
-    <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="compareModalTitle">
-      <div class="modal-head">
-        <span class="modal-title" id="compareModalTitle">상품 비교</span>
-        <button type="button" class="modal-close" onclick="closeCompareModal()">닫기 ✕</button>
-      </div>
-      <div id="compareTableWrap"></div>
-    </div>
-  </div>
 
   <div id="cookieConsentBanner" style="display:none; position:fixed; bottom:0; left:0; right:0; z-index:9999; background:#16213a; color:#fff; padding:16px 20px; box-shadow:0 -4px 12px rgba(0,0,0,0.15); font-family:'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
     <div style="max-width:1100px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;">
