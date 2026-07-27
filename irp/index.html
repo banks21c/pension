@@ -12,37 +12,37 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;600;700&family=Noto+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    /* 네이비 잉크 + 금색 포인트 + 인장 레드 — index.html과 동일한 공식 증서/증권 톤 */
-    --ink: #0d1830;
-    --ink-soft: #5b6472;
-    --paper: #f8f6f0;
-    --card: #fffdf8;
-    --card-stub: #efeadc;
-    --line: #dcd3ba;
-    --line-strong: #cda658;
-    --accent: #a97f34;
-    --accent-soft: #cda658;
+    /* NextFinUp 브랜드 블루 — index.html과 동일 팔레트 */
+    --ink: #16213a;
+    --ink-soft: #6c757d;
+    --paper: #f4f6f9;
+    --card: #ffffff;
+    --card-stub: #eef3fb;
+    --line: #dee2e6;
+    --line-strong: #9fc0ff;
+    --accent: #0d47a1;
+    --accent-soft: #1e88e5;
     --accent-ink: #ffffff;
-    --seal: #8c2a1e;
-    --success: #2f7a4d;
+    --seal: #c62828;
+    --success: #1e7e34;
     --success-bg: #e6f4ea;
     --ml: #2f7a4d;
     --dl: #6b4f8f;
-    --shadow: 0 1px 2px rgba(13,24,48,0.06), 0 8px 24px rgba(13,24,48,0.08);
+    --shadow: 0 1px 2px rgba(13,45,110,0.08), 0 8px 24px rgba(13,45,110,0.10);
   }
   @media (prefers-color-scheme: dark) {
     :root {
       --ink: #eef1f7;
-      --ink-soft: #93a0bd;
-      --paper: #0b1122;
-      --card: #131c33;
-      --card-stub: #1a2540;
-      --line: #2b3a5e;
-      --line-strong: #8c6a2e;
-      --accent: #cda658;
-      --accent-soft: #e0bd7c;
-      --accent-ink: #0d1830;
-      --seal: #d17a63;
+      --ink-soft: #9fb0c9;
+      --paper: #0d1626;
+      --card: #142238;
+      --card-stub: #1b2c47;
+      --line: #2c3e5c;
+      --line-strong: #3f6fb0;
+      --accent: #4d8ee0;
+      --accent-soft: #7db3ee;
+      --accent-ink: #0d1626;
+      --seal: #e57373;
       --success: #7fd19f;
       --success-bg: #163524;
       --ml: #7fd19f;
@@ -51,16 +51,16 @@
     }
   }
   :root[data-theme="dark"] {
-    --ink: #eef1f7; --ink-soft: #93a0bd; --paper: #0b1122; --card: #131c33; --card-stub: #1a2540;
-    --line: #2b3a5e; --line-strong: #8c6a2e; --accent: #cda658; --accent-soft: #e0bd7c; --accent-ink: #0d1830;
-    --seal: #d17a63; --success: #7fd19f; --success-bg: #163524; --ml: #7fd19f; --dl: #c3a3e8;
+    --ink: #eef1f7; --ink-soft: #9fb0c9; --paper: #0d1626; --card: #142238; --card-stub: #1b2c47;
+    --line: #2c3e5c; --line-strong: #3f6fb0; --accent: #4d8ee0; --accent-soft: #7db3ee; --accent-ink: #0d1626;
+    --seal: #e57373; --success: #7fd19f; --success-bg: #163524; --ml: #7fd19f; --dl: #c3a3e8;
     --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 12px 32px rgba(0,0,0,0.4);
   }
   :root[data-theme="light"] {
-    --ink: #0d1830; --ink-soft: #5b6472; --paper: #f8f6f0; --card: #fffdf8; --card-stub: #efeadc;
-    --line: #dcd3ba; --line-strong: #cda658; --accent: #a97f34; --accent-soft: #cda658; --accent-ink: #ffffff;
-    --seal: #8c2a1e; --success: #2f7a4d; --success-bg: #e6f4ea; --ml: #2f7a4d; --dl: #6b4f8f;
-    --shadow: 0 1px 2px rgba(13,24,48,0.06), 0 8px 24px rgba(13,24,48,0.08);
+    --ink: #16213a; --ink-soft: #6c757d; --paper: #f4f6f9; --card: #ffffff; --card-stub: #eef3fb;
+    --line: #dee2e6; --line-strong: #9fc0ff; --accent: #0d47a1; --accent-soft: #1e88e5; --accent-ink: #ffffff;
+    --seal: #c62828; --success: #1e7e34; --success-bg: #e6f4ea; --ml: #2f7a4d; --dl: #6b4f8f;
+    --shadow: 0 1px 2px rgba(13,45,110,0.08), 0 8px 24px rgba(13,45,110,0.10);
   }
 
   * { box-sizing: border-box; }
@@ -165,7 +165,7 @@
     font-weight: 700; font-size: 16px; cursor: pointer; padding: 12px 20px; background: var(--accent); color: var(--accent-ink);
     transition: transform 0.15s ease, box-shadow 0.15s ease;
   }
-  .btn:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(169,127,52,0.28); }
+  .btn:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(13,71,161,0.28); }
   .btn:active { transform: translateY(0); }
   .btn-block { width: 100%; margin-top: 18px; }
 
@@ -297,7 +297,7 @@
     overflow: hidden;
     transition: transform 0.15s ease, box-shadow 0.15s ease;
   }
-  .ledger-entry:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(13,24,48,0.08), 0 16px 32px rgba(13,24,48,0.12); }
+  .ledger-entry:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(13,45,110,0.08), 0 16px 32px rgba(13,45,110,0.12); }
 
   .ledger-stub {
     background: var(--card-stub);
