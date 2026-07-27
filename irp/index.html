@@ -571,8 +571,59 @@
   .footer-row { display: flex; flex-direction: column; gap: 8px; }
   .footer-brand { font-family: 'Noto Serif KR', serif; font-weight: 700; font-size: 14px; }
   .footer-note { font-size: 12px; color: var(--ink-soft); max-width: 60ch; line-height: 1.7; }
+
+  /* ---------- shared: best-fee badge, compare bar/modal, print (also inlined in ../index.html) ---------- */
+  .best-fee-badge {
+    display: inline-flex; align-items: center; gap: 4px; margin-top: 6px; margin-left: 6px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.05em; text-transform: uppercase;
+    color: var(--success); background: var(--success-bg); border: 1px solid var(--success);
+    border-radius: 3px; padding: 2px 7px;
+  }
+  .compare-check {
+    display: inline-flex; align-items: center; gap: 5px; margin-top: 10px;
+    font-size: 11.5px; color: var(--ink-soft); cursor: pointer; user-select: none;
+  }
+  .compare-check input { accent-color: var(--accent); cursor: pointer; }
+
+  .compare-bar {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 200;
+    display: flex; align-items: center; justify-content: center; gap: 16px;
+    background: var(--card); border-top: 1px solid var(--line-strong); box-shadow: 0 -4px 16px rgba(13,45,110,0.12);
+    padding: 12px 24px;
+  }
+  .compare-bar-text { font-size: 13px; color: var(--ink-soft); }
+  .compare-bar-text b { color: var(--ink); font-weight: 700; }
+  .compare-bar .btn-ghost {
+    background: transparent; border: 1px solid var(--line-strong); color: var(--ink-soft);
+    border-radius: 7px; padding: 10px 16px; font-size: 13px; font-weight: 600; cursor: pointer;
+  }
+
+  .modal-overlay {
+    position: fixed; inset: 0; z-index: 300; background: rgba(13,24,48,0.5);
+    display: flex; align-items: center; justify-content: center; padding: 24px;
+  }
+  .modal-box {
+    background: var(--card); border-radius: 12px; box-shadow: var(--shadow);
+    max-width: 860px; width: 100%; max-height: 84vh; overflow: auto; padding: 28px 32px;
+  }
+  .modal-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 18px; }
+  .modal-title { font-size: 18px; font-weight: 800; }
+  .modal-close { background: transparent; border: 1px solid var(--line-strong); border-radius: 6px; color: var(--ink-soft); font-size: 13px; cursor: pointer; padding: 6px 12px; }
+  .compare-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .compare-table th, .compare-table td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  .compare-table th { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink-soft); }
+  .compare-table td.k-col { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink-soft); }
+
+  .print-btn { background: transparent; border: 1px solid var(--line-strong); color: var(--ink-soft); border-radius: 6px; padding: 7px 14px; font-size: 12.5px; font-weight: 600; cursor: pointer; }
+  @media print {
+    header, .toc-bar, .compare-bar, .modal-overlay, .sort-bar, .demo-warning, .data-callout,
+    .compare-check, .btn, .print-btn, #cookieConsentBanner, section#consult, .passbook-cover,
+    .factor-detail, details.factor-detail summary { display: none !important; }
+    body { background: #fff; color: #000; }
+    .ledger-entry { break-inside: avoid; box-shadow: none; border: 1px solid #999; margin-bottom: 10px; }
+    .wrap { max-width: 100%; padding: 0; }
+  }
 </style>
-<link rel="stylesheet" href="../pension-shared.css">
 </head>
 <body>
 
@@ -1217,8 +1268,125 @@
     </div>
   </footer>
 
-  <script src="../pension-shared.js"></script>
   <script>
+    // ---------- shared: best-fee badge, sort, compare bar/modal (also inlined in ../index.html) ----------
+    (function () {
+      var list = document.getElementById('plans-list');
+      if (!list) return;
+      var entries = Array.prototype.slice.call(list.children);
+      var lowest = entries.reduce(function (min, el) {
+        return parseFloat(el.dataset.fee) < parseFloat(min.dataset.fee) ? el : min;
+      }, entries[0]);
+      if (lowest) {
+        var badge = document.createElement('span');
+        badge.className = 'best-fee-badge';
+        badge.textContent = '최저수수료';
+        lowest.querySelector('.type-tag').insertAdjacentElement('afterend', badge);
+      }
+    })();
+
+    (function () {
+      var list = document.getElementById('plans-list');
+      var buttons = document.querySelectorAll('.sort-btn');
+      if (!list || !buttons.length) return;
+      var defaultOrder = Array.prototype.slice.call(list.children);
+
+      function sortBy(mode) {
+        var items;
+        if (mode === 'fee') {
+          items = Array.prototype.slice.call(list.children).sort(function (a, b) {
+            return parseFloat(a.dataset.fee) - parseFloat(b.dataset.fee);
+          });
+        } else if (mode === 'name') {
+          items = Array.prototype.slice.call(list.children).sort(function (a, b) {
+            return a.dataset.name.localeCompare(b.dataset.name, 'ko');
+          });
+        } else {
+          items = defaultOrder;
+        }
+        list.classList.add('resorting');
+        setTimeout(function () {
+          items.forEach(function (el) { list.appendChild(el); });
+          list.classList.remove('resorting');
+        }, 180);
+      }
+
+      buttons.forEach(function (btn) {
+        btn.setAttribute('aria-pressed', btn.classList.contains('active') ? 'true' : 'false');
+        btn.addEventListener('click', function () {
+          buttons.forEach(function (b) { b.classList.remove('active'); b.setAttribute('aria-pressed', 'false'); });
+          btn.classList.add('active');
+          btn.setAttribute('aria-pressed', 'true');
+          sortBy(btn.dataset.sort);
+        });
+      });
+    })();
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') { closeCompareModal(); }
+    });
+
+    var compareSet = new Set();
+
+    function toggleCompare(cb) {
+      var card = cb.closest('.ledger-entry');
+      var name = card.dataset.name;
+      if (cb.checked) { compareSet.add(name); } else { compareSet.delete(name); }
+      var bar = document.getElementById('compareBar');
+      document.getElementById('compareCount').textContent = compareSet.size;
+      bar.style.display = compareSet.size >= 2 ? 'flex' : 'none';
+    }
+
+    function clearCompare() {
+      compareSet.clear();
+      document.querySelectorAll('.compare-cb').forEach(function (cb) { cb.checked = false; });
+      document.getElementById('compareBar').style.display = 'none';
+      closeCompareModal();
+    }
+
+    function openCompareModal() {
+      var cards = Array.prototype.slice.call(document.querySelectorAll('.ledger-entry')).filter(function (c) {
+        return compareSet.has(c.dataset.name);
+      });
+      if (!cards.length) return;
+
+      var rows = [
+        { label: '유형', get: function (c) { return c.querySelector('.type-tag').textContent; } }
+      ];
+      if (cards[0].dataset.match) {
+        rows.push({ label: 'AI 매칭', get: function (c) { return c.dataset.match ? c.dataset.match + '%' : '-'; } });
+      }
+      var gridItemCount = cards[0].querySelectorAll('.ledger-item').length;
+      for (var i = 0; i < gridItemCount; i++) {
+        (function (idx) {
+          var label = cards[0].querySelectorAll('.ledger-item')[idx].querySelector('.k').textContent;
+          rows.push({ label: label, get: function (c) {
+            var items = c.querySelectorAll('.ledger-item');
+            return items[idx] ? items[idx].querySelector('.v').textContent : '-';
+          }});
+        })(i);
+      }
+      rows.push({ label: '수수료', get: function (c) {
+        return c.querySelector('.fee .k').textContent + ' ' + c.querySelector('.fee .v').textContent;
+      }});
+
+      var html = '<table class="compare-table"><thead><tr><th></th>';
+      cards.forEach(function (c) { html += '<th>' + c.dataset.name + '</th>'; });
+      html += '</tr></thead><tbody>';
+      rows.forEach(function (row) {
+        html += '<tr><td class="k-col">' + row.label + '</td>';
+        cards.forEach(function (c) { html += '<td>' + row.get(c) + '</td>'; });
+        html += '</tr>';
+      });
+      html += '</tbody></table>';
+      document.getElementById('compareTableWrap').innerHTML = html;
+      document.getElementById('compareModal').style.display = 'flex';
+    }
+
+    function closeCompareModal() {
+      document.getElementById('compareModal').style.display = 'none';
+    }
+
     (function () {
       var tocLinks = document.querySelectorAll('.toc-link');
       var sections = Array.prototype.map.call(tocLinks, function (link) {
