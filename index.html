@@ -199,7 +199,8 @@
 
   section { padding: 48px 0; }
   .section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
-  .section-title { font-size: 25.5px; font-weight: 800; }
+  .section-title { font-size: 25.5px; font-weight: 800; display: flex; align-items: center; gap: 10px; }
+  .section-title::before { content: ""; width: 5px; height: 22px; border-radius: 3px; background: var(--accent); }
   .section-note { font-size: 15px; color: var(--ink-soft); }
 
   .sort-bar { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
@@ -273,7 +274,7 @@
   }
   .terms-strip strong { color: var(--ink); }
 
-  .consult { background: var(--card); border: 1px solid var(--line); border-radius: 10px; box-shadow: var(--shadow); padding: 36px 40px; max-width: 640px; }
+  .consult { background: linear-gradient(160deg, var(--card) 0%, var(--card-stub) 130%); border: 1px solid var(--line); border-top: 3px solid var(--accent); border-radius: 10px; box-shadow: var(--shadow); padding: 36px 40px; max-width: 640px; }
   .consult-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
   .consult-grid .full { grid-column: 1 / -1; }
   .consult-grid label { display: block; font-size: 15px; font-weight: 700; color: var(--ink-soft); margin-bottom: 6px; }
