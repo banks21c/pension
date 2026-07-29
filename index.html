@@ -494,6 +494,46 @@
 </style>
 </head>
 <body>
+<style id="ta-nav-style">
+  /* 본문 칼럼과 같은 폭·여백. 네비와 탭이 본문 왼쪽 끝에 맞춰 선다. */
+  :root { --ta-nav-h: 52px; --ta-col: 960px; --ta-col-pad: 24px; }
+  /* 링크마다 자체 좌우 패딩이 있어, 글자가 본문 왼쪽 끝에 서려면 그만큼 빼줘야 한다.
+     --ta-item-pad는 각 바가 자기 링크 패딩 값을 넣는다. */
+  .ta-inner {
+    width: 100%; max-width: var(--ta-col); margin: 0 auto;
+    padding: 0 calc(var(--ta-col-pad) - var(--ta-item-pad, 0px));
+    display: flex; align-items: center;
+    overflow-x: auto; -webkit-overflow-scrolling: touch;
+  }
+  .ta-inner::-webkit-scrollbar { display: none; }
+  /* 페이지 자체의 sticky 헤더가 네비 바 아래로 붙도록 밀어준다.
+     `top`은 positioned 요소에만 적용되므로 static 헤더에는 아무 영향이 없다. */
+  body > header, body > .header { top: var(--ta-nav-h) !important; }
+  .ta-nav {
+    position: sticky; top: 0; z-index: 10000;
+    display: flex; align-items: center;
+    height: var(--ta-nav-h);
+    background: #12160f; color: #eef0ea;
+    font-family: 'Pretendard Variable','Pretendard',-apple-system,BlinkMacSystemFont,'Malgun Gothic','Apple SD Gothic Neo',sans-serif;
+    font-size: 14px; line-height: 1;
+  }
+  .ta-nav .ta-inner { --ta-item-pad: 4px; gap: 4px; }
+  .ta-nav a { color: inherit; text-decoration: none; white-space: nowrap; }
+  .ta-nav .ta-brand {
+    font-weight: 700; margin-right: 12px; padding: 8px 4px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .ta-nav .ta-dot {
+    width: 9px; height: 9px; border-radius: 50%;
+    background: linear-gradient(135deg, #e07a5f, #a8c686); flex: none;
+  }
+  .ta-nav .ta-link { padding: 8px 12px; border-radius: 7px; opacity: .72; }
+  .ta-nav .ta-link:hover { opacity: 1; background: rgba(255,255,255,.09); }
+  .ta-nav .ta-link[aria-current="page"] {
+    opacity: 1; background: rgba(224,122,95,.22); color: #f2a68e; font-weight: 600;
+  }
+</style>
+<nav class="ta-nav" aria-label="주 메뉴"><div class="ta-inner"><a class="ta-brand" href="index.html"><span class="ta-dot"></span>NextFinUp 종합자산관리</a><a class="ta-link" href="national-pension/index.html">국민연금</a><a class="ta-link" href="savings-pension/index.html">연금저축</a><a class="ta-link" href="index.html" aria-current="page">IRP</a><a class="ta-link" href="isa/index.html">ISA</a><a class="ta-link" href="insurance/index.html">보험</a><a class="ta-link" href="bond/index.html">채권</a><a class="ta-link" href="realestate/index.html">부동산</a></div></nav>
 
   <header id="app-header-fallback" style="visibility: hidden;">
     <div class="wrap">
@@ -515,7 +555,6 @@
 
   <header>
     <div class="wrap">
-      <a href="/" class="back-link">← NextFinUp 홈으로</a>
       <div class="brand-row">
         <div class="brand">
           <span class="brand-mark">IRP 원장</span>
